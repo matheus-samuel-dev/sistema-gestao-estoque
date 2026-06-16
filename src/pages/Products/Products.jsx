@@ -84,6 +84,7 @@ function Products() {
     const handleSearch = async (value) => {
 
     if (!value.trim()) {
+        // eslint-disable-next-line react-hooks/immutability
         loadProducts();
         return;
     }
@@ -217,6 +218,7 @@ function Products() {
 
     useEffect(() => {
         loadProducts();
+        // eslint-disable-next-line react-hooks/immutability
         loadCategories();
     }, []);
 

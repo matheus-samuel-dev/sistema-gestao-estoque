@@ -28,13 +28,12 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-
 import { useGoogleLogin } from "@react-oauth/google";
 
 import warehouseBg from "../../assets/banner_login_projeto.png";
 import { googleLogin, login } from "../../services/authService";
 
-function CubeLogo({ size = 86 }) {
+function CubeLogo({ size = 78 }) {
   return (
     <Box
       component="svg"
@@ -42,8 +41,8 @@ function CubeLogo({ size = 86 }) {
       sx={{
         width: size,
         height: size,
-        flex: "0 0 auto",
-        filter: "drop-shadow(0 12px 22px rgba(37,99,235,.35))",
+        flexShrink: 0,
+        filter: "drop-shadow(0 10px 20px rgba(37,99,235,.35))",
       }}
     >
       <defs>
@@ -100,19 +99,31 @@ function CubeLogo({ size = 86 }) {
 function GoogleMark() {
   return (
     <Box
-      component="span"
+      component="svg"
+      viewBox="0 0 48 48"
+      aria-hidden="true"
       sx={{
-        display: "inline-grid",
-        placeItems: "center",
-        width: 24,
-        height: 24,
-        fontSize: 22,
-        fontWeight: 700,
-        fontFamily: "Arial, sans-serif",
-        color: "#4285f4",
+        width: 23,
+        height: 23,
+        display: "block",
       }}
     >
-      G
+      <path
+        fill="#FFC107"
+        d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.223 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917Z"
+      />
+      <path
+        fill="#FF3D00"
+        d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691Z"
+      />
+      <path
+        fill="#4CAF50"
+        d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44Z"
+      />
+      <path
+        fill="#1976D2"
+        d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917Z"
+      />
     </Box>
   );
 }
@@ -128,17 +139,18 @@ function Feature({ icon, title, desc }) {
     >
       <Box
         sx={{
-          width: 58,
-          height: 58,
+          width: 54,
+          height: 54,
           borderRadius: 3,
           background:
-            "linear-gradient(135deg, rgba(37,99,235,.34), rgba(14,165,233,.18))",
+            "linear-gradient(135deg, rgba(37,99,235,.36), rgba(14,165,233,.2))",
           boxShadow: "inset 0 1px 0 rgba(255,255,255,.16)",
           color: "#9bd3ff",
           display: "grid",
           placeItems: "center",
+          flexShrink: 0,
           "& svg": {
-            fontSize: 31,
+            fontSize: 29,
           },
         }}
       >
@@ -149,7 +161,7 @@ function Feature({ icon, title, desc }) {
         <Typography
           sx={{
             fontWeight: 800,
-            fontSize: 17,
+            fontSize: 16,
             lineHeight: 1.2,
           }}
         >
@@ -159,8 +171,8 @@ function Feature({ icon, title, desc }) {
         <Typography
           sx={{
             color: "rgba(255,255,255,.82)",
-            mt: 0.5,
-            fontSize: 16,
+            mt: 0.35,
+            fontSize: 15,
           }}
         >
           {desc}
@@ -178,6 +190,18 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+
+  const persistToken = (token) => {
+    if (rememberMe) {
+      localStorage.setItem("token", token);
+      sessionStorage.removeItem("token");
+      return;
+    }
+
+    sessionStorage.setItem("token", token);
+    localStorage.removeItem("token");
+  };
 
   const handleLogin = async () => {
     try {
@@ -185,7 +209,7 @@ function Login() {
 
       const response = await login(email, password);
 
-      localStorage.setItem("token", response.token);
+      persistToken(response.token);
       navigate("/dashboard");
     } catch {
       alert("Usuário ou senha inválidos");
@@ -203,7 +227,7 @@ function Login() {
           tokenResponse.access_token
         );
 
-        localStorage.setItem("token", response.token);
+        persistToken(response.token);
         navigate("/dashboard");
       } catch (error) {
         console.error(error);
@@ -221,7 +245,10 @@ function Login() {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
         display: "grid",
         gridTemplateColumns: {
           xs: "1fr",
@@ -240,41 +267,34 @@ function Login() {
           flexDirection: "column",
           justifyContent: "center",
           position: "relative",
+          height: "100vh",
           px: {
-            lg: 9,
-            xl: 12,
+            lg: 7,
+            xl: 9,
           },
-          py: 7,
+          py: 4,
           color: "#fff",
           backgroundImage: `
-            linear-gradient(90deg, rgba(3,10,30,.98), rgba(5,18,48,.9), rgba(5,20,54,.72)),
+            linear-gradient(90deg, rgba(3,10,30,.98), rgba(5,18,48,.92), rgba(5,20,54,.76)),
             url(${warehouseBg})
           `,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(circle at 22% 12%, rgba(37,99,235,.2), transparent 36%)",
-            pointerEvents: "none",
-          },
         }}
       >
         <Box
           sx={{
             position: "relative",
             zIndex: 1,
-            maxWidth: 720,
+            maxWidth: 680,
           }}
         >
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: 3,
-              mb: 4,
+              gap: 2.5,
+              mb: 3,
             }}
           >
             <CubeLogo />
@@ -282,10 +302,10 @@ function Login() {
             <Box>
               <Typography
                 sx={{
-                  fontSize: 38,
+                  fontSize: 34,
                   fontWeight: 900,
                   letterSpacing: 0,
-                  lineHeight: 1.05,
+                  lineHeight: 1.04,
                 }}
               >
                 Sistema de
@@ -293,10 +313,10 @@ function Login() {
 
               <Typography
                 sx={{
-                  fontSize: 44,
+                  fontSize: 40,
                   fontWeight: 900,
                   letterSpacing: 0,
-                  lineHeight: 1.08,
+                  lineHeight: 1.05,
                   color: "#2563eb",
                 }}
               >
@@ -307,21 +327,21 @@ function Login() {
 
           <Box
             sx={{
-              width: 88,
+              width: 82,
               height: 4,
               bgcolor: "#2f80ff",
               borderRadius: 999,
-              mb: 3.5,
+              mb: 2.7,
             }}
           />
 
           <Typography
             sx={{
               color: "rgba(255,255,255,.88)",
-              fontSize: 21,
-              lineHeight: 1.5,
-              maxWidth: 650,
-              mb: 4.5,
+              fontSize: 19,
+              lineHeight: 1.45,
+              maxWidth: 610,
+              mb: 3.4,
             }}
           >
             Tenha controle total do seu estoque em tempo real,
@@ -329,7 +349,7 @@ function Login() {
             dados precisos.
           </Typography>
 
-          <Stack spacing={3}>
+          <Stack spacing={2.35}>
             <Feature
               icon={<Inventory2 />}
               title="Cadastro de Produtos"
@@ -359,16 +379,19 @@ function Login() {
 
       <Box
         sx={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
+          height: "100vh",
+          display: "grid",
+          gridTemplateRows: "1fr auto",
           alignItems: "center",
-          justifyContent: "center",
+          justifyItems: "center",
           px: {
             xs: 2,
             sm: 4,
+            lg: 6,
           },
-          py: 5,
+          py: 2.4,
+          bgcolor: "#f8fafc",
+          overflow: "hidden",
         }}
       >
         <Paper
@@ -377,39 +400,39 @@ function Login() {
             width: "100%",
             maxWidth: 650,
             px: {
-              xs: 3,
-              sm: 6,
+              xs: 2.6,
+              sm: 5,
             },
             py: {
-              xs: 4,
-              sm: 6,
+              xs: 2.8,
+              sm: 3.7,
             },
             borderRadius: 4,
             bgcolor: "#fff",
             border: "1px solid rgba(15,23,42,.06)",
             boxShadow:
-              "0 24px 70px rgba(15,23,42,.12), 0 2px 8px rgba(15,23,42,.04)",
+              "0 20px 60px rgba(15,23,42,.12), 0 2px 8px rgba(15,23,42,.04)",
           }}
         >
           <Box
             sx={{
               textAlign: "center",
-              mb: 4.5,
+              mb: 2.8,
             }}
           >
             <Box
               sx={{
-                width: 88,
-                height: 88,
+                width: 72,
+                height: 72,
                 mx: "auto",
                 borderRadius: "50%",
                 bgcolor: "#eff6ff",
                 display: "grid",
                 placeItems: "center",
                 color: "#1d70d8",
-                mb: 2.5,
+                mb: 1.7,
                 "& svg": {
-                  fontSize: 44,
+                  fontSize: 37,
                 },
               }}
             >
@@ -419,8 +442,8 @@ function Login() {
             <Typography
               sx={{
                 fontSize: {
-                  xs: 28,
-                  sm: 34,
+                  xs: 26,
+                  sm: 31,
                 },
                 fontWeight: 900,
                 color: "#0f172a",
@@ -433,8 +456,8 @@ function Login() {
             <Typography
               sx={{
                 color: "#6b7280",
-                mt: 1.2,
-                fontSize: 18,
+                mt: 0.8,
+                fontSize: 17,
               }}
             >
               Acesse sua conta para continuar
@@ -445,7 +468,7 @@ function Login() {
             sx={{
               fontWeight: 800,
               color: "#111827",
-              mb: 1,
+              mb: 0.8,
             }}
           >
             E-mail
@@ -466,9 +489,9 @@ function Login() {
               ),
             }}
             sx={{
-              mb: 2.5,
+              mb: 1.8,
               "& .MuiOutlinedInput-root": {
-                height: 58,
+                height: 54,
                 borderRadius: 2,
                 bgcolor: "#fff",
               },
@@ -479,7 +502,7 @@ function Login() {
             sx={{
               fontWeight: 800,
               color: "#111827",
-              mb: 1,
+              mb: 0.8,
             }}
           >
             Senha
@@ -518,7 +541,7 @@ function Login() {
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
-                height: 58,
+                height: 54,
                 borderRadius: 2,
                 bgcolor: "#fff",
               },
@@ -531,17 +554,21 @@ function Login() {
               justifyContent: "space-between",
               alignItems: "center",
               gap: 2,
-              mt: 2.5,
-              mb: 3,
+              mt: 1.6,
+              mb: 2.2,
               flexWrap: "wrap",
             }}
           >
             <FormControlLabel
               control={
                 <Checkbox
-                  defaultChecked
+                  checked={rememberMe}
+                  onChange={(event) =>
+                    setRememberMe(event.target.checked)
+                  }
                   sx={{
                     color: "#2563eb",
+                    py: 0.5,
                     "&.Mui-checked": {
                       color: "#2563eb",
                     },
@@ -551,11 +578,14 @@ function Login() {
               label="Lembrar meu acesso"
               sx={{
                 color: "#4b5563",
+                m: 0,
               }}
             />
 
             <Link
-              href="#"
+              component="button"
+              type="button"
+              onClick={() => navigate("/forgot-password")}
               underline="none"
               sx={{
                 color: "#2563eb",
@@ -574,7 +604,7 @@ function Login() {
             disabled={loading}
             startIcon={!loading && <Lock />}
             sx={{
-              height: 64,
+              height: 58,
               borderRadius: 2,
               fontSize: 17,
               fontWeight: 900,
@@ -598,7 +628,7 @@ function Login() {
 
           <Divider
             sx={{
-              my: 3.5,
+              my: 2.25,
               color: "#6b7280",
               "&::before, &::after": {
                 borderColor: "#e5e7eb",
@@ -621,7 +651,7 @@ function Login() {
               googleLoading ? undefined : <GoogleMark />
             }
             sx={{
-              height: 62,
+              height: 56,
               borderRadius: 2,
               borderColor: "#d1d5db",
               color: "#1f2937",
@@ -629,6 +659,13 @@ function Login() {
               fontWeight: 800,
               textTransform: "none",
               bgcolor: "#fff",
+              display: "flex",
+              alignItems: "center",
+              "& .MuiButton-startIcon": {
+                display: "inline-flex",
+                alignItems: "center",
+                mr: 1.4,
+              },
               "&:hover": {
                 borderColor: "#9ca3af",
                 bgcolor: "#f9fafb",
@@ -644,29 +681,30 @@ function Login() {
         </Paper>
 
         <Stack
-          spacing={2}
+          spacing={1.2}
           sx={{
             width: "100%",
             maxWidth: 650,
             alignItems: "center",
             textAlign: "center",
-            mt: 3,
             color: "#6b7280",
+            pt: 1.8,
+            fontSize: 14,
           }}
         >
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: 1,
-              fontSize: 16,
             }}
           >
-            <Security sx={{ color: "#1d70d8" }} />
+            <Security sx={{ color: "#1d70d8", fontSize: 22 }} />
             Seus dados estão protegidos com segurança avançada
           </Box>
 
-          <Typography sx={{ fontSize: 15 }}>
+          <Typography sx={{ fontSize: 14 }}>
             © 2026 Sistema de Gestão de Estoque. Todos os direitos
             reservados.
             <br />
@@ -683,7 +721,7 @@ function Login() {
             usando React, Spring Boot e PostgreSQL.
           </Typography>
 
-          <Typography sx={{ fontSize: 15 }}>
+          <Typography sx={{ fontSize: 14 }}>
             Versão 1.0.0
           </Typography>
         </Stack>
