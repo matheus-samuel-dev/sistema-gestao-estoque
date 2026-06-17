@@ -27,21 +27,6 @@ export const register = async (data) => {
   return response.data;
 };
 
-export const googleLogin = async (
-  googleToken
-) => {
-
-  const response =
-    await api.post(
-      "/auth/google",
-      {
-        token: googleToken
-      }
-    );
-
-  return response.data;
-};
-
 export const requestPasswordReset = async (email) => {
   const response = await api.post(
     "/auth/forgot-password",
