@@ -626,6 +626,30 @@ function Login() {
             )}
           </Button>
 
+          <Typography
+            sx={{
+              mt: 1.6,
+              textAlign: "center",
+              color: "#6b7280",
+              fontSize: 15,
+            }}
+          >
+            Não possui uma conta?{" "}
+            <Link
+              component="button"
+              type="button"
+              onClick={() => navigate("/register")}
+              underline="hover"
+              sx={{
+                color: "#1669e8",
+                fontWeight: 800,
+                verticalAlign: "baseline",
+              }}
+            >
+              Criar conta
+            </Link>
+          </Typography>
+
           <Divider
             sx={{
               my: 2.25,

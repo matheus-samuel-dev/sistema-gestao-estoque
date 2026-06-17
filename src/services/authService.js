@@ -13,6 +13,20 @@ export const login = async (email, password) => {
     return response.data;
 };
 
+export const register = async (data) => {
+  const response = await api.post(
+    "/auth/register",
+    {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: "USER"
+    }
+  );
+
+  return response.data;
+};
+
 export const googleLogin = async (
   googleToken
 ) => {
