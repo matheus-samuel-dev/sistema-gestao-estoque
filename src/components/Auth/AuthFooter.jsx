@@ -6,7 +6,7 @@ function AuthFooter() {
     <Box
       component="footer"
       sx={{
-        py: 1.5,
+        mt: 1.8,
         color: "#64748b",
         textAlign: "center",
       }}

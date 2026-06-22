@@ -85,9 +85,7 @@ function Login() {
           height: { xs: "auto", lg: "100dvh" },
           minHeight: "100dvh",
           display: "grid",
-          gridTemplateRows: "1fr auto",
-          alignItems: "center",
-          justifyItems: "center",
+          placeItems: "center",
           px: { xs: 2, sm: 4, md: 6 },
           py: { xs: 2.5, sm: 3, lg: 1.5 },
           overflowY: { xs: "auto", lg: "hidden" },
@@ -291,10 +289,10 @@ function Login() {
               </Link>
             </Typography>
 
+            <AuthFooter />
+
           </Paper>
         </Box>
-
-        <AuthFooter />
       </Box>
     </Box>
   );

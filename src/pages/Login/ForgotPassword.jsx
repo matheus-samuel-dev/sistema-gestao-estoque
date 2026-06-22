@@ -52,9 +52,7 @@ function ForgotPassword() {
         height: { xs: "auto", lg: "100dvh" },
         minHeight: "100dvh",
         display: "grid",
-        gridTemplateRows: "1fr auto",
-        alignItems: "center",
-        justifyItems: "center",
+        placeItems: "center",
         bgcolor: "#f8fafc",
         px: { xs: 2, sm: 4 },
         py: { xs: 3, sm: 4, lg: 1.5 },
@@ -158,9 +156,9 @@ function ForgotPassword() {
         >
           Voltar para o login
         </Button>
-      </Paper>
 
-      <AuthFooter />
+        <AuthFooter />
+      </Paper>
     </Box>
   );
 }
