@@ -1,66 +1,54 @@
-# 📦 Sistema de Gestão de Estoque
-
 <div align="center">
 
-# Sistema de Gestão de Estoque
+# 🚀 Sistema de Gestão de Estoque - Frontend
 
-Aplicação Full Stack para gerenciamento de estoque, desenvolvida com React, Spring Boot e PostgreSQL, permitindo autenticação segura de usuários, controle de produtos e organização de categorias.
+Interface web responsiva para gerenciamento de estoque, desenvolvida com **React**, **Vite** e **Material UI**.
+
+O projeto faz parte de uma aplicação full stack integrada a uma API REST em **Java Spring Boot**, permitindo autenticação de usuários, controle de produtos, categorias, movimentações de estoque e visualização de indicadores em dashboard.
 
 <br>
 
 ![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge\&logo=react)
 ![Vite](https://img.shields.io/badge/Vite-Build-646CFF?style=for-the-badge\&logo=vite)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=for-the-badge\&logo=javascript)
-![Material UI](https://img.shields.io/badge/Material_UI-UI-007FFF?style=for-the-badge\&logo=mui)
+![Material UI](https://img.shields.io/badge/Material_UI-Design-007FFF?style=for-the-badge\&logo=mui)
 ![Axios](https://img.shields.io/badge/Axios-HTTP_Client-5A29E4?style=for-the-badge)
-![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge\&logo=openjdk)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=for-the-badge\&logo=springboot)
-![Spring Security](https://img.shields.io/badge/Spring_Security-JWT-6DB33F?style=for-the-badge\&logo=springsecurity)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge\&logo=postgresql)
+![React Router](https://img.shields.io/badge/React_Router-Routes-CA4245?style=for-the-badge\&logo=reactrouter)
 ![Vercel](https://img.shields.io/badge/Vercel-Deploy-000000?style=for-the-badge\&logo=vercel)
-![Railway](https://img.shields.io/badge/Railway-Backend-0B0D0E?style=for-the-badge\&logo=railway)
 
 </div>
 
 ---
 
-## 🚀 Demonstração
+# 📑 Índice
 
-🔗 Aplicação Online
-
-https://sistema-gestao-estoque-two.vercel.app
-
----
-
-## 📖 Sobre o Projeto
-
-O Sistema de Gestão de Estoque foi desenvolvido com o objetivo de simular um ambiente real de controle de produtos, permitindo o gerenciamento eficiente de itens, categorias e usuários.
-
-A aplicação utiliza uma arquitetura moderna baseada em Frontend e Backend desacoplados, autenticação JWT e banco de dados PostgreSQL hospedado em nuvem.
-
-Este projeto representa uma implementação completa de uma aplicação Full Stack, desde o desenvolvimento da interface até a construção da API REST e sua publicação em ambiente de produção.
+* 🌐 Demonstração
+* 🏛 Arquitetura do Projeto
+* ⭐ Destaques do Frontend
+* 📸 Preview
+* ✨ Funcionalidades
+* 🛠 Tecnologias Utilizadas
+* 📂 Estrutura do Projeto
+* ⚙️ Executando Localmente
+* 🔗 Integração com Backend
+* 🚀 Próximas Evoluções
+* 👨‍💻 Autor
 
 ---
 
-## ✨ Funcionalidades
+# 🌐 Demonstração
 
-* Login e autenticação de usuários
-* Controle de acesso com JWT
-* Dashboard administrativo
-* Cadastro de produtos
-* Edição de produtos
-* Exclusão de produtos
-* Cadastro de categorias
-* Integração com API REST
-* Persistência de dados em PostgreSQL
-* Interface moderna e responsiva
+## 🚀 Aplicação Online
+
+Acesse a versão publicada em produção:
+
+🔗 https://sistema-gestao-estoque-two.vercel.app
 
 ---
 
-## 🏗 Arquitetura
+# 🏛 Arquitetura do Projeto
 
 ```text
-Frontend (React)
+Frontend (React + Vite)
         ↓
 API REST (Spring Boot)
         ↓
@@ -69,77 +57,279 @@ PostgreSQL
 
 ---
 
-## 🛠 Tecnologias Utilizadas
+# 💻 Código Fonte
 
-### Frontend
+## Frontend
+
+Interface web responsável pela experiência do usuário, autenticação, dashboard e telas de gestão.
+
+🔗 https://github.com/matheus-samuel-dev/sistema-gestao-estoque
+
+## Backend
+
+API REST responsável pela autenticação JWT, regras de negócio, segurança e persistência de dados.
+
+🔗 https://github.com/matheus-samuel-dev/sistema-gestao-estoque-api
+
+---
+
+# ⭐ Destaques do Frontend
+
+✅ Interface moderna e responsiva
+
+✅ Login e cadastro de usuários
+
+✅ Recuperação de senha
+
+✅ Dashboard com indicadores e gráficos
+
+✅ Gestão de produtos
+
+✅ Gestão de categorias
+
+✅ Registro de entradas e saídas de estoque
+
+✅ Exportação de movimentações em PDF e Excel
+
+✅ Integração com API REST Spring Boot
+
+✅ Deploy em produção com Vercel
+
+---
+
+# 📸 Preview
+
+## 🔐 Login
+
+![Login](./docs/login.png)
+
+## 📊 Dashboard
+
+![Dashboard](./docs/dashboard.png)
+
+## 📈 Movimentações
+
+![Movimentações](./docs/movimentacoes.png)
+
+## 📦 Produtos
+
+![Produtos](./docs/produtos.png)
+
+---
+
+# ✨ Funcionalidades
+
+## 🔐 Autenticação
+
+* Tela de login
+* Tela de cadastro
+* Recuperação de senha
+* Armazenamento de token JWT
+* Proteção de rotas autenticadas
+* Logout do sistema
+
+## 📊 Dashboard
+
+* Cards com indicadores principais
+* Total de produtos
+* Total de categorias
+* Produtos com estoque baixo
+* Produtos sem estoque
+* Total de movimentações
+* Gráfico de entradas e saídas
+* Gráfico de produtos por categoria
+* Listagem das últimas movimentações
+
+## 📦 Produtos
+
+* Listagem de produtos
+* Cadastro de novo produto
+* Edição de produto
+* Exclusão de produto
+* Busca por produto
+* Exibição de categoria e quantidade em estoque
+
+## 🏷 Categorias
+
+* Listagem de categorias
+* Cadastro de categorias
+* Edição de categorias
+* Exclusão de categorias
+* Organização dos produtos por categoria
+
+## 📈 Movimentações
+
+* Registro de entrada de estoque
+* Registro de saída de estoque
+* Filtros por tipo, produto e período
+* Cards de resumo
+* Exportação para Excel
+* Exportação para PDF
+* Histórico de movimentações
+
+---
+
+# 🛠 Tecnologias Utilizadas
+
+## Frontend
 
 * React
 * Vite
-* JavaScript
 * Material UI
+* React Router
 * Axios
-* React Router DOM
 
-### Backend
+## Recursos de Interface
 
-* Java 21
-* Spring Boot
-* Spring Security
-* JWT
-* Spring Data JPA
-* Hibernate
-* PostgreSQL
-* Swagger/OpenAPI
+* Componentes responsivos
+* Cards informativos
+* Tabelas
+* Formulários
+* Modais
+* Ícones
+* Feedback visual para ações do usuário
 
-### Infraestrutura
+## Integrações
 
-* Vercel
-* Railway
-* GitHub
+* API REST Spring Boot
+* JWT Authentication
+* Vercel Deploy
 
 ---
 
-## 📂 Integração com Backend
+# 📂 Estrutura do Projeto
 
-### Backend
+```text
+src
+├── assets
+├── components
+├── layouts
+├── pages
+├── routes
+├── services
+└── utils
+```
 
-https://github.com/matheus-samuel-dev/sistema-gestao-estoque-api
+## Organização principal
+
+* `pages`: telas principais da aplicação
+* `components`: componentes reutilizáveis
+* `services`: comunicação com a API
+* `routes`: configuração das rotas
+* `layouts`: estrutura visual da aplicação
+* `assets`: imagens e recursos estáticos
+* `utils`: funções auxiliares
 
 ---
 
-## 🔮 Melhorias Futuras
+# ⚙️ Executando Localmente
 
-* [ ] Controle de permissões por perfil de usuário
-* [x] Dashboard com gráficos e métricas
-* [ ] Relatórios de estoque
-* [x] Exportação para PDF e Excel
-* [ ] Upload de imagens para produtos
-* [ ] Testes automatizados
-* [ ] Dockerização da aplicação
-* [ ] Pipeline CI/CD
-* [ ] Logs e monitoramento
-* [ ] Recuperação de senha por e-mail
+## Pré-requisitos
+
+Antes de iniciar, é necessário ter instalado:
+
+* Node.js
+* npm
+* Backend da aplicação em execução
+
+## Clonando o projeto
+
+```bash
+git clone https://github.com/matheus-samuel-dev/sistema-gestao-estoque.git
+
+cd sistema-gestao-estoque
+```
+
+## Instalando dependências
+
+```bash
+npm install
+```
+
+## Configurando variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+Para ambiente de produção, a variável deve apontar para a API publicada:
+
+```env
+VITE_API_URL=https://sistema-gestao-estoque-api-production.up.railway.app
+```
+
+## Executando o frontend
+
+```bash
+npm run dev
+```
+
+A aplicação será iniciada em:
+
+```text
+http://localhost:5173
+```
 
 ---
 
-## 🌐 Contato
+# 🔗 Integração com Backend
 
-### Portfólio
+Este frontend consome uma API REST desenvolvida com Java Spring Boot.
+
+## Principais endpoints utilizados
+
+```text
+POST /auth/login
+POST /auth/register
+POST /auth/forgot-password
+POST /auth/reset-password
+
+GET /products
+POST /products
+PUT /products/{id}
+DELETE /products/{id}
+
+GET /categories
+POST /categories
+PUT /categories/{id}
+DELETE /categories/{id}
+
+GET /stock-movements
+POST /stock-movements
+DELETE /stock-movements/{id}
+```
+
+---
+
+# 🚀 Próximas Evoluções
+
+* [ ] Melhorar responsividade das tabelas em telas muito pequenas
+* [ ] Implementar tema claro/escuro
+* [ ] Adicionar testes automatizados
+* [ ] Melhorar experiência mobile
+* [ ] Criar notificações em tempo real
+* [ ] Adicionar filtros avançados no dashboard
+* [ ] Implementar perfil do usuário
+* [ ] Adicionar página de configurações
+* [ ] Melhorar acessibilidade
+* [ ] Criar onboarding para novos usuários
+
+---
+
+# 👨‍💻 Autor
+
+## Matheus Samuel Baena Soares
+
+Desenvolvedor de Software com foco em Java, Spring Boot e desenvolvimento de aplicações web.
+
+🌐 Portfólio
 
 https://matheus-samuel-dev.github.io/Portfolio/
 
-### LinkedIn
+💼 LinkedIn
 
 https://www.linkedin.com/in/matheus-samuel-dev/
-
----
-
-## 👨‍💻 Autor
-
-**Matheus Samuel Baena Soares**
-
-Desenvolvedor Full Stack em formação, com foco em Java, Spring Boot e desenvolvimento de aplicações web.
-
----
 
 ⭐ Se gostou do projeto, considere deixar uma estrela no repositório.
