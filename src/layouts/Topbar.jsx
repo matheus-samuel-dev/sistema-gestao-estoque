@@ -1,15 +1,15 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
   IconButton,
   Avatar,
   Box,
 } from "@mui/material";
 
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import MenuIcon from "@mui/icons-material/Menu";
 
-function Topbar() {
+function Topbar({ onMenuClick }) {
   return (
     <AppBar
       elevation={1}
@@ -17,17 +17,19 @@ function Topbar() {
       sx={{
         backgroundColor: "white",
         color: "#111827",
-        width: "calc(100% - 260px)",
-        ml: "260px",
+        width: { xs: "100%", md: "calc(100% - 260px)" },
+        ml: { xs: 0, md: "260px" },
       }}
     >
       <Toolbar>
-        <Typography
-          variant="h6"
-          fontWeight="bold"
+        <IconButton
+          edge="start"
+          aria-label="Abrir menu"
+          onClick={onMenuClick}
+          sx={{ display: { xs: "inline-flex", md: "none" } }}
         >
-          Sistema de Estoque
-        </Typography>
+          <MenuIcon />
+        </IconButton>
 
         <Box sx={{ flexGrow: 1 }} />
 

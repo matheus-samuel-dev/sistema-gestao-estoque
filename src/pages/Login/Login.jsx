@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -24,6 +25,7 @@ import {
 import AuthBrandPanel from "../../components/Auth/AuthBrandPanel";
 import AuthFooter from "../../components/Auth/AuthFooter";
 import { login } from "../../services/authService";
+import { isValidEmail } from "../../utils/validators";
 
 function Login() {
   const navigate = useNavigate();
@@ -34,6 +36,15 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState("");
+  const [touched, setTouched] = useState({ email: false, password: false });
+
+  const emailError = touched.email && !isValidEmail(email)
+    ? "Informe um e-mail válido."
+    : "";
+  const passwordError = touched.password && !password
+    ? "Informe sua senha."
+    : "";
+  const isFormValid = isValidEmail(email) && Boolean(password);
 
   const persistToken = (token) => {
     if (rememberMe) {
@@ -47,6 +58,9 @@ function Login() {
   };
 
   const handleLogin = async () => {
+    setTouched({ email: true, password: true });
+    if (!isFormValid) return;
+
     try {
       setLoading(true);
       setError("");
@@ -138,20 +152,7 @@ function Login() {
               </Typography>
             </Box>
 
-            {error && (
-              <Typography
-                role="alert"
-                sx={{
-                  mb: 2,
-                  p: 1.5,
-                  borderRadius: 2,
-                  bgcolor: "#fef2f2",
-                  color: "#b91c1c",
-                }}
-              >
-                {error}
-              </Typography>
-            )}
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
             <Typography sx={{ fontWeight: 800, color: "#111827", mb: 0.8 }}>
               E-mail
@@ -162,7 +163,13 @@ function Login() {
               type="email"
               autoComplete="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setError("");
+              }}
+              onBlur={() => setTouched((current) => ({ ...current, email: true }))}
+              error={Boolean(emailError)}
+              helperText={emailError}
               slotProps={{
                 input: {
                   startAdornment: (
@@ -187,7 +194,13 @@ function Login() {
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setError("");
+              }}
+              onBlur={() => setTouched((current) => ({ ...current, password: true }))}
+              error={Boolean(passwordError)}
+              helperText={passwordError}
               slotProps={{
                 input: {
                   startAdornment: (
@@ -255,7 +268,7 @@ function Login() {
               fullWidth
               variant="contained"
               onClick={handleLogin}
-              disabled={loading || !email.trim() || !password}
+              disabled={loading || !isFormValid}
               startIcon={!loading && <Lock />}
               sx={{
                 minHeight: 56,

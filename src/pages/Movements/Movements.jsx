@@ -506,13 +506,15 @@ function Movements() {
 
     return (
 
-        <Box>
+        <Box sx={{ minWidth: 0 }}>
 
             <Box
                 sx={{
                     display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: { xs: "stretch", sm: "center" },
+                    gap: 2,
                     mb: 4
                 }}
             >
@@ -520,6 +522,7 @@ function Movements() {
                 <Typography
                     variant="h3"
                     fontWeight="bold"
+                    sx={{ fontSize: { xs: 28, sm: 38, md: 48 } }}
                 >
                     Movimentações
                 </Typography>
@@ -527,7 +530,9 @@ function Movements() {
                 <Box
                     sx={{
                         display: "flex",
-                        gap: 2
+                        gap: 1.5,
+                        flexWrap: "wrap",
+                        "& .MuiButton-root": { flex: { xs: "1 1 130px", sm: "0 0 auto" } }
                     }}
                 >
 
@@ -564,6 +569,7 @@ function Movements() {
             <Box
                 sx={{
                     display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
                     gap: 3,
                     mb: 4
                 }}
@@ -719,7 +725,7 @@ function Movements() {
             <Box
                 sx={{
                     backgroundColor: "#fff",
-                    p: 3,
+                    p: { xs: 2, sm: 3 },
                     borderRadius: 4,
                     mb: 4,
                     boxShadow: "0 2px 12px rgba(0,0,0,0.08)"
@@ -759,6 +765,7 @@ function Movements() {
                 <Box
                     sx={{
                         display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
                         gap: 2,
                         flexWrap: "wrap",
                         alignItems: "end"
@@ -775,7 +782,8 @@ function Movements() {
                             )
                         }
                         sx={{
-                            minWidth: 220
+                            minWidth: { xs: 0, sm: 220 },
+                            width: { xs: "100%", sm: "auto" }
                         }}
                     >
                         <MenuItem value="">
@@ -791,7 +799,7 @@ function Movements() {
                         </MenuItem>
                     </TextField>
 
-                    <Box>
+                    <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
                         <Typography
                             variant="caption"
                             color="text.secondary"
@@ -813,7 +821,8 @@ function Movements() {
                                 )
                             }
                             sx={{
-                                minWidth: 200
+                                minWidth: { xs: 0, sm: 200 },
+                                width: { xs: "100%", sm: "auto" }
                             }}
                             InputProps={{
                                 startAdornment: (
@@ -825,7 +834,7 @@ function Movements() {
                         />
                     </Box>
 
-                    <Box>
+                    <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
                         <Typography
                             variant="caption"
                             color="text.secondary"
@@ -847,7 +856,8 @@ function Movements() {
                                 )
                             }
                             sx={{
-                                minWidth: 200
+                                minWidth: { xs: 0, sm: 200 },
+                                width: { xs: "100%", sm: "auto" }
                             }}
                             InputProps={{
                                 startAdornment: (
@@ -866,7 +876,8 @@ function Movements() {
                         onClick={clearFilters}
                         sx={{
                             height: 56,
-                            borderRadius: 2
+                            borderRadius: 2,
+                            width: { xs: "100%", sm: "auto" }
                         }}
                     >
                         Limpar
@@ -880,10 +891,10 @@ function Movements() {
                 elevation={0}
                 sx={{
                     mt: 2,
-                    height: 600,
+                    height: { xs: 520, md: 600 },
                     width: "100%",
                     borderRadius: 4,
-                    overflow: "hidden",
+                    overflowX: "auto",
                     boxShadow: "0 2px 12px rgba(0,0,0,0.08)"
                 }}
             >
@@ -898,6 +909,7 @@ function Movements() {
                     ]}
                     sx={{
                         border: "none",
+                        minWidth: 720,
 
                         "& .MuiDataGrid-columnHeaders": {
                             backgroundColor: "#f8fafc",
@@ -921,8 +933,10 @@ function Movements() {
 
                 <Paper
                     sx={{
-                        width: 500,
-                        p: 4,
+                        width: { xs: "calc(100% - 24px)", sm: 500 },
+                        maxHeight: "calc(100dvh - 32px)",
+                        overflowY: "auto",
+                        p: { xs: 2.5, sm: 4 },
                         position: "absolute",
                         top: "50%",
                         left: "50%",

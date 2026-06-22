@@ -124,24 +124,23 @@ function Categories() {
     };
 
     return (
-        <Box p={3}>
+        <Box sx={{ p: { xs: 0, md: 1 } }}>
             <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={3}
+                sx={{ mb: 3 }}
             >
                 <Box
                     sx={{
                         display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
                         justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 3,
+                        alignItems: { xs: "stretch", sm: "center" },
+                        gap: 2,
                     }}
                 >
                     <Typography
                         variant="h4"
                         fontWeight="bold"
+                        sx={{ fontSize: { xs: 28, sm: 34 } }}
                     >
                         Categorias
                     </Typography>
@@ -154,6 +153,7 @@ function Categories() {
                             borderRadius: 2,
                             px: 3,
                             py: 1.2,
+                            width: { xs: "100%", sm: "auto" },
                         }}
                     >
                         Nova Categoria
@@ -173,11 +173,11 @@ function Categories() {
                 component={Paper}
                 sx={{
                     borderRadius: 3,
-                    overflow: "hidden",
+                    overflowX: "auto",
                     boxShadow: 3,
                 }}
             >
-                <Table>
+                <Table sx={{ minWidth: 620 }}>
                     <TableHead
                         sx={{
                             backgroundColor: "#f5f7fb",
@@ -238,6 +238,7 @@ function Categories() {
                 onClose={handleClose}
                 fullWidth
                 maxWidth="sm"
+                slotProps={{ paper: { sx: { m: { xs: 1.5, sm: 3 }, width: { xs: "calc(100% - 24px)", sm: "100%" } } } }}
             >
                 <DialogTitle>
                     {editingId

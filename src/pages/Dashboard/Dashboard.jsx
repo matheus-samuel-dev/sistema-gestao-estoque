@@ -5,6 +5,7 @@ import {
     Paper,
     Typography,
     Table,
+    TableContainer,
     TableBody,
     TableCell,
     TableHead,
@@ -131,6 +132,7 @@ function Dashboard() {
                 variant="h4"
                 fontWeight="bold"
                 gutterBottom
+                sx={{ fontSize: { xs: 28, sm: 34 } }}
             >
                 Dashboard
             </Typography>
@@ -193,8 +195,9 @@ function Dashboard() {
                 <Grid size={{ xs: 12, xl: 8 }}>
                     <Paper
                         sx={{
-                            p: 3,
+                            p: { xs: 2, sm: 3 },
                             borderRadius: 3,
+                            minWidth: 0,
                         }}
                     >
                         <Typography
@@ -207,7 +210,7 @@ function Dashboard() {
 
                         <ResponsiveContainer
                             width="100%"
-                            height={350}
+                            height={300}
                         >
                             <BarChart data={movementSummary}>
                                 <CartesianGrid strokeDasharray="3 3" />
@@ -227,8 +230,9 @@ function Dashboard() {
                 <Grid size={{ xs: 12, xl: 4 }}>
                     <Paper
                         sx={{
-                            p: 3,
+                            p: { xs: 2, sm: 3 },
                             borderRadius: 3,
+                            minWidth: 0,
                         }}
                     >
                         <Typography
@@ -240,14 +244,14 @@ function Dashboard() {
 
                         <ResponsiveContainer
                             width="100%"
-                            height={350}
+                            height={300}
                         >
                             <PieChart>
                                 <Pie
                                     data={categoryData}
                                     dataKey="products"
                                     nameKey="category"
-                                    outerRadius={120}
+                                    outerRadius={90}
                                     label
                                 >
                                     {categoryData.map((entry, index) => (
@@ -267,7 +271,7 @@ function Dashboard() {
                 <Grid size={{ xs: 12, xl: 6 }}>
                     <Paper
                         sx={{
-                            p: 3,
+                            p: { xs: 2, sm: 3 },
                             borderRadius: 3,
                         }}
                     >
@@ -278,7 +282,8 @@ function Dashboard() {
                             Últimas Movimentações
                         </Typography>
 
-                        <Table>
+                        <TableContainer sx={{ overflowX: "auto" }}>
+                        <Table sx={{ minWidth: 560 }}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Produto</TableCell>
@@ -336,13 +341,14 @@ function Dashboard() {
                                 ))}
                             </TableBody>
                         </Table>
+                        </TableContainer>
                     </Paper>
                 </Grid>
 
                 <Grid size={{ xs: 12, xl: 6 }}>
                     <Paper
                         sx={{
-                            p: 3,
+                            p: { xs: 2, sm: 3 },
                             borderRadius: 3,
                         }}
                     >
@@ -353,7 +359,8 @@ function Dashboard() {
                             Últimos Produtos Cadastrados
                         </Typography>
 
-                        <Table>
+                        <TableContainer sx={{ overflowX: "auto" }}>
+                        <Table sx={{ minWidth: 560 }}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Produto</TableCell>
@@ -399,6 +406,7 @@ function Dashboard() {
                                 ))}
                             </TableBody>
                         </Table>
+                        </TableContainer>
                     </Paper>
                 </Grid>
             </Grid>

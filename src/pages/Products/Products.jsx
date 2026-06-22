@@ -245,14 +245,17 @@ function Products() {
             <Box
                 sx={{
                     display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: { xs: "stretch", sm: "center" },
+                    gap: 2,
                     mb: 3,
                 }}
             >
                 <Typography
                     variant="h4"
                     fontWeight="bold"
+                    sx={{ fontSize: { xs: 28, sm: 34 } }}
                 >
                     Produtos
                 </Typography>
@@ -265,6 +268,7 @@ function Products() {
                         borderRadius: 2,
                         px: 3,
                         py: 1.2,
+                        width: { xs: "100%", sm: "auto" },
                     }}
                 >
                     Novo Produto
@@ -297,10 +301,10 @@ function Products() {
                 component={Paper}
                 sx={{
                     borderRadius: 3,
-                    overflow: "hidden",
+                    overflowX: "auto",
                 }}
             >
-                <Table>
+                <Table sx={{ minWidth: 650 }}>
                     <TableHead
                         sx={{
                             backgroundColor: "#f5f7fb",
@@ -398,6 +402,7 @@ function Products() {
                 onClose={() => setOpen(false)}
                 maxWidth="sm"
                 fullWidth
+                slotProps={{ paper: { sx: { m: { xs: 1.5, sm: 3 }, width: { xs: "calc(100% - 24px)", sm: "100%" } } } }}
             >
                 <DialogTitle>
                     {editingProduct

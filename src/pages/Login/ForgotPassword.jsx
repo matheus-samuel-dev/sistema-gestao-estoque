@@ -15,6 +15,7 @@ import { Email, LockReset } from "@mui/icons-material";
 
 import AuthFooter from "../../components/Auth/AuthFooter";
 import { requestPasswordReset } from "../../services/authService";
+import { isValidEmail } from "../../utils/validators";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -22,8 +23,15 @@ function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [touched, setTouched] = useState(false);
+  const emailError = touched && !isValidEmail(email)
+    ? "Informe um e-mail válido."
+    : "";
 
   const handleSubmit = async () => {
+    setTouched(true);
+    if (!isValidEmail(email)) return;
+
     try {
       setLoading(true);
       setMessage("");
@@ -111,7 +119,13 @@ function ForgotPassword() {
           autoComplete="email"
           placeholder="seu@email.com"
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setError("");
+          }}
+          onBlur={() => setTouched(true)}
+          error={Boolean(emailError)}
+          helperText={emailError}
           slotProps={{
             input: {
               startAdornment: (
@@ -131,7 +145,7 @@ function ForgotPassword() {
           fullWidth
           variant="contained"
           onClick={handleSubmit}
-          disabled={loading || !email.trim()}
+          disabled={loading || !isValidEmail(email)}
           sx={{
             minHeight: 54,
             borderRadius: 2,

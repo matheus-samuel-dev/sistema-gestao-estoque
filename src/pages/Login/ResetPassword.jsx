@@ -33,8 +33,22 @@ function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [touched, setTouched] = useState({ password: false, confirmPassword: false });
+
+  const passwordError = touched.password && password.length < 6
+    ? "A senha deve ter pelo menos 6 caracteres."
+    : "";
+  const confirmPasswordError = touched.confirmPassword && !confirmPassword
+    ? "Confirme sua senha."
+    : touched.confirmPassword && password !== confirmPassword
+      ? "As senhas não conferem."
+      : "";
+  const isFormValid = Boolean(token) && password.length >= 6 && password === confirmPassword;
 
   const handleSubmit = async () => {
+    setTouched({ password: true, confirmPassword: true });
+    if (!isFormValid) return;
+
     if (password !== confirmPassword) {
       setError("As senhas não conferem.");
       return;
@@ -138,6 +152,9 @@ function ResetPassword() {
           autoComplete="new-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
+          onBlur={() => setTouched((current) => ({ ...current, password: true }))}
+          error={Boolean(passwordError)}
+          helperText={passwordError}
           slotProps={{
             input: {
               ...passwordInputProps,
@@ -167,6 +184,9 @@ function ResetPassword() {
           autoComplete="new-password"
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
+          onBlur={() => setTouched((current) => ({ ...current, confirmPassword: true }))}
+          error={Boolean(confirmPasswordError)}
+          helperText={confirmPasswordError}
           slotProps={{ input: passwordInputProps }}
           sx={{
             mb: 2,
@@ -178,7 +198,7 @@ function ResetPassword() {
           fullWidth
           variant="contained"
           onClick={handleSubmit}
-          disabled={loading || !token || password.length < 6 || !confirmPassword}
+          disabled={loading || !isFormValid}
           sx={{
             minHeight: 54,
             borderRadius: 2,

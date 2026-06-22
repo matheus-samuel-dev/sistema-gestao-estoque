@@ -24,8 +24,7 @@ import {
 import AuthBrandPanel from "../../components/Auth/AuthBrandPanel";
 import AuthFooter from "../../components/Auth/AuthFooter";
 import { register } from "../../services/authService";
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { isValidEmail } from "../../utils/validators";
 
 function Register() {
   const navigate = useNavigate();
@@ -39,6 +38,19 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [touched, setTouched] = useState({});
+
+  const fieldErrors = {
+    name: formData.name.trim().length < 3 ? "Informe um nome com pelo menos 3 caracteres." : "",
+    email: !isValidEmail(formData.email) ? "Informe um e-mail válido." : "",
+    password: formData.password.length < 6 ? "A senha deve ter pelo menos 6 caracteres." : "",
+    confirmPassword: !formData.confirmPassword
+      ? "Confirme sua senha."
+      : formData.password !== formData.confirmPassword
+        ? "As senhas não conferem."
+        : "",
+  };
+  const isFormValid = Object.values(fieldErrors).every((value) => !value);
 
   const updateField = (field) => (event) => {
     setFormData((current) => ({ ...current, [field]: event.target.value }));
@@ -47,13 +59,14 @@ function Register() {
 
   const validate = () => {
     if (!formData.name.trim()) return "Informe seu nome.";
-    if (!EMAIL_PATTERN.test(formData.email.trim())) return "Informe um e-mail válido.";
+    if (!isValidEmail(formData.email)) return "Informe um e-mail válido.";
     if (formData.password.length < 6) return "A senha deve ter pelo menos 6 caracteres.";
     if (formData.password !== formData.confirmPassword) return "As senhas não conferem.";
     return "";
   };
 
   const handleSubmit = async () => {
+    setTouched({ name: true, email: true, password: true, confirmPassword: true });
     const validationError = validate();
 
     if (validationError) {
@@ -163,6 +176,9 @@ function Register() {
             autoComplete="name"
             value={formData.name}
             onChange={updateField("name")}
+            onBlur={() => setTouched((current) => ({ ...current, name: true }))}
+            error={Boolean(touched.name && fieldErrors.name)}
+            helperText={touched.name && fieldErrors.name}
             slotProps={{
               input: {
                 startAdornment: (
@@ -180,6 +196,9 @@ function Register() {
             autoComplete="email"
             value={formData.email}
             onChange={updateField("email")}
+            onBlur={() => setTouched((current) => ({ ...current, email: true }))}
+            error={Boolean(touched.email && fieldErrors.email)}
+            helperText={touched.email && fieldErrors.email}
             slotProps={{
               input: {
                 startAdornment: (
@@ -197,6 +216,9 @@ function Register() {
             autoComplete="new-password"
             value={formData.password}
             onChange={updateField("password")}
+            onBlur={() => setTouched((current) => ({ ...current, password: true }))}
+            error={Boolean(touched.password && fieldErrors.password)}
+            helperText={touched.password && fieldErrors.password}
             slotProps={{
               input: {
                 startAdornment: (
@@ -225,6 +247,9 @@ function Register() {
             autoComplete="new-password"
             value={formData.confirmPassword}
             onChange={updateField("confirmPassword")}
+            onBlur={() => setTouched((current) => ({ ...current, confirmPassword: true }))}
+            error={Boolean(touched.confirmPassword && fieldErrors.confirmPassword)}
+            helperText={touched.confirmPassword && fieldErrors.confirmPassword}
             slotProps={{
               input: {
                 startAdornment: (
@@ -239,7 +264,7 @@ function Register() {
             fullWidth
             variant="contained"
             onClick={handleSubmit}
-            disabled={loading || Boolean(success)}
+            disabled={loading || Boolean(success) || !isFormValid}
             sx={{
               minHeight: 54,
               borderRadius: 2,
