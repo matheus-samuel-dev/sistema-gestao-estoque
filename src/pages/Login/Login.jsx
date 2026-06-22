@@ -17,12 +17,12 @@ import {
 import {
   Email,
   Lock,
-  Security,
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
 
 import AuthBrandPanel from "../../components/Auth/AuthBrandPanel";
+import AuthFooter from "../../components/Auth/AuthFooter";
 import { login } from "../../services/authService";
 
 function Login() {
@@ -68,11 +68,13 @@ function Login() {
   return (
     <Box
       sx={{
+        width: "100vw",
+        height: { xs: "auto", lg: "100dvh" },
         minHeight: "100dvh",
         display: "grid",
         gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" },
         bgcolor: "#f8fafc",
-        overflowX: "hidden",
+        overflow: { xs: "visible", lg: "hidden" },
       }}
     >
       <AuthBrandPanel />
@@ -80,11 +82,15 @@ function Login() {
       <Box
         component="main"
         sx={{
+          height: { xs: "auto", lg: "100dvh" },
           minHeight: "100dvh",
           display: "grid",
-          placeItems: "center",
+          gridTemplateRows: "1fr auto",
+          alignItems: "center",
+          justifyItems: "center",
           px: { xs: 2, sm: 4, md: 6 },
-          py: { xs: 2.5, sm: 4 },
+          py: { xs: 2.5, sm: 3, lg: 1.5 },
+          overflowY: { xs: "auto", lg: "hidden" },
         }}
       >
         <Box sx={{ width: "100%", maxWidth: 650 }}>
@@ -285,31 +291,10 @@ function Login() {
               </Link>
             </Typography>
 
-            <Box
-              sx={{
-                mt: 2.2,
-                pt: 2,
-                borderTop: "1px solid #e5e7eb",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 1,
-                color: "#64748b",
-                textAlign: "center",
-                fontSize: 14,
-              }}
-            >
-              <Security sx={{ color: "#1d70d8", fontSize: 21 }} />
-              Acesso interno seguro para usuários cadastrados.
-            </Box>
           </Paper>
-
-          <Typography
-            sx={{ mt: 2, textAlign: "center", color: "#64748b", fontSize: 13 }}
-          >
-            © 2026 Sistema de Gestão de Estoque · Versão 1.0.0
-          </Typography>
         </Box>
+
+        <AuthFooter />
       </Box>
     </Box>
   );

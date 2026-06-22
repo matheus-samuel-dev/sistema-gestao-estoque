@@ -22,6 +22,7 @@ import {
 } from "@mui/icons-material";
 
 import AuthBrandPanel from "../../components/Auth/AuthBrandPanel";
+import AuthFooter from "../../components/Auth/AuthFooter";
 import { register } from "../../services/authService";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -91,11 +92,13 @@ function Register() {
   return (
     <Box
       sx={{
+        width: "100vw",
+        height: { xs: "auto", lg: "100dvh" },
         minHeight: "100dvh",
         display: "grid",
         gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" },
         bgcolor: "#f8fafc",
-        overflowX: "hidden",
+        overflow: { xs: "visible", lg: "hidden" },
       }}
     >
       <AuthBrandPanel />
@@ -103,11 +106,15 @@ function Register() {
       <Box
         component="main"
         sx={{
+          height: { xs: "auto", lg: "100dvh" },
           minHeight: "100dvh",
           display: "grid",
-          placeItems: "center",
+          gridTemplateRows: "1fr auto",
+          alignItems: "center",
+          justifyItems: "center",
           px: { xs: 2, sm: 4, md: 6 },
-          py: { xs: 2.5, sm: 4 },
+          py: { xs: 2.5, sm: 3, lg: 1.5 },
+          overflowY: { xs: "auto", lg: "hidden" },
         }}
       >
         <Paper
@@ -260,6 +267,8 @@ function Register() {
             </Link>
           </Typography>
         </Paper>
+
+        <AuthFooter />
       </Box>
     </Box>
   );

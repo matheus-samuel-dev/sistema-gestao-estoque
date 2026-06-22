@@ -19,6 +19,7 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 
+import AuthFooter from "../../components/Auth/AuthFooter";
 import { resetPassword } from "../../services/authService";
 
 function ResetPassword() {
@@ -69,13 +70,18 @@ function ResetPassword() {
     <Box
       component="main"
       sx={{
+        width: "100vw",
+        height: { xs: "auto", lg: "100dvh" },
         minHeight: "100dvh",
         display: "grid",
-        placeItems: "center",
+        gridTemplateRows: "1fr auto",
+        alignItems: "center",
+        justifyItems: "center",
         bgcolor: "#f8fafc",
         px: { xs: 2, sm: 4 },
-        py: { xs: 3, sm: 5 },
+        py: { xs: 3, sm: 4, lg: 1.5 },
         overflowX: "hidden",
+        overflowY: { xs: "auto", lg: "hidden" },
       }}
     >
       <Paper
@@ -196,6 +202,8 @@ function ResetPassword() {
           Voltar para o login
         </Button>
       </Paper>
+
+      <AuthFooter />
     </Box>
   );
 }
