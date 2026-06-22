@@ -31,7 +31,7 @@ export const requestPasswordReset = async (email) => {
   const response = await api.post(
     "/auth/forgot-password",
     { email },
-    { timeout: 15000 }
+    { timeout: 3000 }
   );
 
   return response.data;
