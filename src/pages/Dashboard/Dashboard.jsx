@@ -11,6 +11,8 @@ import {
     TableHead,
     TableRow,
     Chip,
+    Alert,
+    Skeleton,
 } from "@mui/material";
 
 import {
@@ -32,6 +34,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 
 import DashboardCard from "../../components/Dashboard/DashboardCard";
 
@@ -41,6 +44,7 @@ import {
 } from "../../services/dashboardService";
 import { getMovements } from "../../services/stockMovementService";
 import { getLatestProducts } from "../../services/productService";
+import { formatCurrency, getApiError } from "../../utils/formatters";
 
 const COLORS = [
     "#1976d2",
@@ -56,17 +60,21 @@ function Dashboard() {
         categories: 0,
         lowStock: 0,
         outOfStock: 0,
+        movements: 0,
+        stockValue: 0,
     });
 
     const [categoryData, setCategoryData] = useState([]);
-    const [movementData, setMovementData] = useState([]);
     const [movementSummary, setMovementSummary] = useState([]);
     const [latestMovements, setLatestMovements] = useState([]);
     const [latestProducts, setLatestProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const loadDashboard = async () => {
             try {
+                setLoading(true);
                 const [
                     dashboardData,
                     categoriesData,
@@ -105,7 +113,6 @@ function Dashboard() {
 
                 setStats(dashboardData);
                 setCategoryData(categoriesData);
-                setMovementData(movements);
                 setLatestMovements(latest);
                 setLatestProducts(products);
                 setMovementSummary([
@@ -119,7 +126,9 @@ function Dashboard() {
                     },
                 ]);
             } catch (error) {
-                console.error(error);
+                setError(getApiError(error, "Não foi possível carregar os indicadores."));
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -142,7 +151,9 @@ function Dashboard() {
                 spacing={3}
                 sx={{ alignItems: "stretch" }}
             >
-                <Grid size={{ xs: 12, sm: 6, lg: 2.4 }}>
+                {error && <Grid size={{ xs: 12 }}><Alert severity="error">{error}</Alert></Grid>}
+                {loading && Array.from({ length: 6 }).map((_, index) => <Grid key={index} size={{ xs: 12, sm: 6, lg: 2 }}><Skeleton variant="rounded" height={180} /></Grid>)}
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
                     <DashboardCard
                         title="PRODUTOS"
                         value={stats.products}
@@ -150,9 +161,9 @@ function Dashboard() {
                         icon={<InventoryIcon />}
                         color="#1976d2"
                     />
-                </Grid>
+                </Grid>}
 
-                <Grid size={{ xs: 12, sm: 6, lg: 2.4 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
                     <DashboardCard
                         title="CATEGORIAS"
                         value={stats.categories}
@@ -160,9 +171,9 @@ function Dashboard() {
                         icon={<CategoryIcon />}
                         color="#4caf50"
                     />
-                </Grid>
+                </Grid>}
 
-                <Grid size={{ xs: 12, sm: 6, lg: 2.4 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
                     <DashboardCard
                         title="ESTOQUE BAIXO"
                         value={stats.lowStock}
@@ -170,9 +181,9 @@ function Dashboard() {
                         icon={<WarningAmberIcon />}
                         color="#ff9800"
                     />
-                </Grid>
+                </Grid>}
 
-                <Grid size={{ xs: 12, sm: 6, lg: 2.4 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
                     <DashboardCard
                         title="SEM ESTOQUE"
                         value={stats.outOfStock}
@@ -180,17 +191,21 @@ function Dashboard() {
                         icon={<CancelIcon />}
                         color="#e53935"
                     />
-                </Grid>
+                </Grid>}
 
-                <Grid size={{ xs: 12, sm: 6, lg: 2.4 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
                     <DashboardCard
                         title="MOVIMENTAÇÕES"
-                        value={movementData.length}
+                        value={stats.movements}
                         subtitle="Movimentações registradas"
                         icon={<SwapHorizIcon />}
                         color="#673ab7"
                     />
-                </Grid>
+                </Grid>}
+
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                    <DashboardCard title="VALOR EM ESTOQUE" value={formatCurrency(stats.stockValue)} subtitle="Capital imobilizado" icon={<PaymentsOutlinedIcon />} color="#00897b" />
+                </Grid>}
 
                 <Grid size={{ xs: 12, xl: 8 }}>
                     <Paper

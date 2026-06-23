@@ -12,7 +12,20 @@ const apiUrl =
 
 const api = axios.create({
   baseURL: apiUrl,
+  timeout: 20000,
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && !window.location.pathname.startsWith("/login")) {
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
+      window.location.assign("/login");
+    }
+    return Promise.reject(error);
+  }
+);
 
 api.interceptors.request.use((config) => {
   const token =

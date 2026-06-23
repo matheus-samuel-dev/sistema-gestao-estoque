@@ -33,7 +33,7 @@ function Topbar({ onMenuClick }) {
 
         <Box sx={{ flexGrow: 1 }} />
 
-        <IconButton>
+        <IconButton aria-label="Notificações">
           <NotificationsNoneIcon />
         </IconButton>
 

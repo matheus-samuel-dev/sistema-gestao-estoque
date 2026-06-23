@@ -34,6 +34,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import ClearIcon from "@mui/icons-material/Clear";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 
 import InputAdornment from "@mui/material/InputAdornment";
 
@@ -43,12 +44,6 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 import IconButton from "@mui/material/IconButton";
 
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
-
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
@@ -57,6 +52,24 @@ import Tooltip from "@mui/material/Tooltip";
 import {
     deleteMovement
 } from "../../services/stockMovementService";
+import MovementAttachmentsDialog from "../../components/Movements/MovementAttachmentsDialog";
+
+async function loadExcelTools() {
+    const [XLSX, fileSaver] = await Promise.all([
+        import("xlsx"),
+        import("file-saver"),
+    ]);
+    const saveAs = fileSaver.saveAs || fileSaver.default?.saveAs || fileSaver.default;
+    return { XLSX, saveAs };
+}
+
+async function loadPdfTools() {
+    const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+        import("jspdf"),
+        import("jspdf-autotable"),
+    ]);
+    return { jsPDF, autoTable };
+}
 
 function Movements() {
 
@@ -71,6 +84,10 @@ function Movements() {
     const [quantity, setQuantity] = useState("");
 
     const [type, setType] = useState("ENTRY");
+    const [origin, setOrigin] = useState("PURCHASE");
+    const [notes, setNotes] = useState("");
+    const [saving, setSaving] = useState(false);
+    const [attachmentTarget, setAttachmentTarget] = useState(null);
 
     const [snackbarOpen, setSnackbarOpen] =
         useState(false);
@@ -162,7 +179,14 @@ function Movements() {
 
     const handleCreateMovement = async () => {
 
+        if (!productId || !quantity || Number(quantity) <= 0) {
+            showMessage("Selecione um produto e informe uma quantidade válida.", "error");
+            return;
+        }
+
         try {
+
+            setSaving(true);
 
             await createMovement({
 
@@ -170,7 +194,9 @@ function Movements() {
 
                 quantity: Number(quantity),
 
-                type
+                type,
+                origin,
+                notes
 
             });
 
@@ -181,6 +207,8 @@ function Movements() {
             setQuantity("");
 
             setType("ENTRY");
+            setOrigin("PURCHASE");
+            setNotes("");
 
             loadMovements();
 
@@ -194,10 +222,12 @@ function Movements() {
             console.error(error);
 
             showMessage(
-                "Erro ao registrar movimentação",
+                error.response?.data?.message || "Erro ao registrar movimentação",
                 "error"
             );
 
+        } finally {
+            setSaving(false);
         }
 
     };
@@ -287,11 +317,18 @@ function Movements() {
         {
             field: "actions",
             headerName: "Ações",
-            width: 120,
+            width: 140,
 
             sortable: false,
 
             renderCell: (params) => (
+
+                <Box>
+                    <Tooltip title="Anexos">
+                        <IconButton onClick={() => setAttachmentTarget(params.row)}>
+                            <AttachFileIcon />
+                        </IconButton>
+                    </Tooltip>
 
                 <Tooltip title="Excluir">
 
@@ -309,6 +346,7 @@ function Movements() {
                     </IconButton>
 
                 </Tooltip>
+                </Box>
 
             )
         }
@@ -397,7 +435,8 @@ function Movements() {
 
     };*/}
 
-    const exportToExcel = () => {
+    const exportToExcel = async () => {
+        const { XLSX, saveAs } = await loadExcelTools();
 
         const dados = filteredRows.map(row => ({
             Produto: row.product,
@@ -449,7 +488,8 @@ function Movements() {
 
     };
 
-    const exportToPDF = () => {
+    const exportToPDF = async () => {
+        const { jsPDF, autoTable } = await loadPdfTools();
 
         const doc = new jsPDF();
 
@@ -1015,19 +1055,45 @@ function Movements() {
 
                     </TextField>
 
+                    <TextField
+                        select
+                        fullWidth
+                        label="Origem"
+                        sx={{ mb: 2 }}
+                        value={origin}
+                        onChange={(e) => setOrigin(e.target.value)}
+                    >
+                        <MenuItem value="PURCHASE">Compra</MenuItem>
+                        <MenuItem value="DONATION">Doação</MenuItem>
+                        <MenuItem value="TRANSFER">Transferência</MenuItem>
+                        <MenuItem value="INTERNAL_PRODUCTION">Produção interna</MenuItem>
+                        <MenuItem value="STOCK_ADJUSTMENT">Ajuste de estoque</MenuItem>
+                        <MenuItem value="OTHER">Outro</MenuItem>
+                    </TextField>
+
+                    <TextField fullWidth multiline minRows={2} label="Observações" value={notes} onChange={(e) => setNotes(e.target.value)} sx={{ mb: 2 }} />
+
                     <Button
                         fullWidth
                         variant="contained"
                         onClick={
                             handleCreateMovement
                         }
+                        disabled={saving || !productId || !quantity || Number(quantity) <= 0}
                     >
-                        Salvar
+                        {saving ? "Salvando..." : "Salvar"}
                     </Button>
 
                 </Paper>
 
             </Modal>
+
+            <MovementAttachmentsDialog
+                movement={attachmentTarget}
+                open={Boolean(attachmentTarget)}
+                onClose={() => setAttachmentTarget(null)}
+                notify={showMessage}
+            />
 
             <Snackbar
                 open={snackbarOpen}

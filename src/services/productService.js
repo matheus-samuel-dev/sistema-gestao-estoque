@@ -38,3 +38,32 @@ export const getLatestProducts = async () => {
 
     return response.data;
 };
+
+export const importProducts = async (items) => {
+    const response = await api.post("/products/import", items);
+    return response.data;
+};
+
+export const uploadProductAttachment = async (productId, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.post(`/attachments/products/${productId}`, formData);
+    return response.data;
+};
+
+export const getProductAttachments = async (productId) => {
+    const response = await api.get(`/attachments/products/${productId}`);
+    return response.data;
+};
+
+export const downloadAttachment = async (id, fileName) => {
+    const response = await api.get(`/attachments/${id}/download`, { responseType: "blob" });
+    const url = URL.createObjectURL(response.data);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
+};
+
+export const deleteAttachment = async (id) => api.delete(`/attachments/${id}`);

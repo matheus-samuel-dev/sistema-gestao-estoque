@@ -17,3 +17,15 @@ export const deleteMovement = async (id) => {
         `/stock-movements/${id}`
     );
 };
+
+export const uploadMovementAttachment = async (movementId, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.post(`/attachments/movements/${movementId}`, formData);
+    return response.data;
+};
+
+export const getMovementAttachments = async (movementId) => {
+    const response = await api.get(`/attachments/movements/${movementId}`);
+    return response.data;
+};

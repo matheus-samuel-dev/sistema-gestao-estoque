@@ -18,3 +18,8 @@ export const updateCategory = async (id, data) => {
 export const deleteCategory = async (id) => {
     await api.delete(`/categories/${id}`);
 };
+
+export const setCategoryActive = async (id, active) => {
+    const response = await api.patch(`/categories/${id}/status`, null, { params: { active } });
+    return response.data;
+};

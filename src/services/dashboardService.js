@@ -1,24 +1,14 @@
 import api from "./api";
-import { getCategories } from "./categoryService";
 
 export const getDashboardData = async () => {
-  const [
-    productsResponse,
-    lowStockResponse,
-    outOfStockResponse,
-    categories,
-  ] = await Promise.all([
-    api.get("/products?page=0&size=1"),
-    api.get("/products/low-stock"),
-    api.get("/products/out-of-stock"),
-    getCategories(),
-  ]);
-
+  const response = await api.get("/dashboard");
   return {
-    products: productsResponse.data.totalElements,
-    categories: categories.length,
-    lowStock: lowStockResponse.data.length,
-    outOfStock: outOfStockResponse.data.length,
+    products: response.data.totalProducts,
+    categories: response.data.totalCategories,
+    lowStock: response.data.lowStockProducts,
+    outOfStock: response.data.outOfStockProducts,
+    movements: response.data.totalMovements,
+    stockValue: response.data.totalStockValue,
   };
 };
 

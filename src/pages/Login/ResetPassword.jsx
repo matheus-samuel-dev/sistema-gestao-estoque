@@ -21,6 +21,8 @@ import {
 
 import AuthFooter from "../../components/Auth/AuthFooter";
 import { resetPassword } from "../../services/authService";
+import { isStrongPassword } from "../../utils/validators";
+import PasswordStrength from "../../components/Auth/PasswordStrength";
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -35,15 +37,15 @@ function ResetPassword() {
   const [error, setError] = useState("");
   const [touched, setTouched] = useState({ password: false, confirmPassword: false });
 
-  const passwordError = touched.password && password.length < 6
-    ? "A senha deve ter pelo menos 6 caracteres."
+  const passwordError = touched.password && !isStrongPassword(password)
+    ? "Use 8 caracteres com maiúscula, minúscula, número e símbolo."
     : "";
   const confirmPasswordError = touched.confirmPassword && !confirmPassword
     ? "Confirme sua senha."
     : touched.confirmPassword && password !== confirmPassword
       ? "As senhas não conferem."
       : "";
-  const isFormValid = Boolean(token) && password.length >= 6 && password === confirmPassword;
+  const isFormValid = Boolean(token) && isStrongPassword(password) && password === confirmPassword;
 
   const handleSubmit = async () => {
     setTouched({ password: true, confirmPassword: true });
@@ -176,6 +178,8 @@ function ResetPassword() {
             "& .MuiOutlinedInput-root": { minHeight: 54, borderRadius: 2 },
           }}
         />
+
+        <PasswordStrength password={password} />
 
         <TextField
           fullWidth

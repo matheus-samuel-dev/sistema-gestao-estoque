@@ -18,13 +18,14 @@ function DashboardCard({
         p: 3,
         borderRadius: 3,
         minHeight: 180,
+        height: "100%",
 
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
       }}
     >
-      <Box>
+      <Box sx={{ minHeight: 92 }}>
         <Typography
           variant="body2"
           color="text.secondary"

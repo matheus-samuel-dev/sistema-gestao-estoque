@@ -1,498 +1,101 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-    Typography,
-    Paper,
-    Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Box,
-    TextField,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    InputAdornment,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
+  Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
+  FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Paper, Select,
+  Skeleton, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead,
+  TableRow, TextField, Tooltip, Typography,
 } from "@mui/material";
-
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/material/IconButton";
-import Chip from "@mui/material/Chip";
-
-import { useEffect, useState } from "react";
-
-import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-
-import {
-    getProducts,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-    searchProducts,
-} from "../../services/productService";
-
-import {
-    getCategories,
-} from "../../services/categoryService";
-
-/* const produtos = [
-    {
-        id: 1,
-        nome: "Notebook Dell",
-        categoria: "Informática",
-        estoque: 15,
-    },
-    {
-        id: 2,
-        nome: "Mouse Logitech",
-        categoria: "Informática",
-        estoque: 50,
-    },
-    {
-        id: 3,
-        nome: "Teclado Mecânico",
-        categoria: "Periféricos",
-        estoque: 25,
-    },
-]; */
-
-function Products() {
-
-    const [open, setOpen] = useState(false);
-
-    const [editingProduct, setEditingProduct] = useState(null);
-
-    const [formData, setFormData] = useState({
-        name: "",
-        price: "",
-        quantity: "",
-        minimumQuantity: "",
-        categoryId: "",
-    });
-
-    const [produtos, setProdutos] = useState([]);
-    const [categories, setCategories] = useState([]);
-
-    const handleSearch = async (value) => {
-
-    if (!value.trim()) {
-        // eslint-disable-next-line react-hooks/immutability
-        loadProducts();
-        return;
-    }
-
-    try {
-        const products = await searchProducts(value);
-        setProdutos(products);
-    } catch (error) {
-        console.error(error);
-    }
-};
-
-    const handleSubmit = async () => {
-        try {
-            const payload = {
-                name: formData.name,
-                price: Number(formData.price),
-                quantity: Number(formData.quantity),
-                minimumQuantity: Number(formData.minimumQuantity),
-                categoryId: formData.categoryId,
-            };
-            if (editingProduct) {
-                await updateProduct(editingProduct.id, payload);
-            } else {
-                await createProduct(payload);
-            }
-
-            loadProducts();
-
-            setOpen(false);
-            setEditingProduct(null);
-
-            setFormData({
-                name: "",
-                price: "",
-                quantity: "",
-                minimumQuantity: "",
-                categoryId: "",
-            });
-
-        } catch (error) {
-            console.log("STATUS:");
-            console.log(error.response?.status);
-
-            console.log("DATA:");
-            console.log(error.response?.data);
-
-            console.log("HEADERS:");
-            console.log(error.response?.headers);
-
-
-            console.log(error);
-        }
-    };
-
-
-    const handleOpen = () => {
-        setEditingProduct(null);
-
-        setFormData({
-            name: "",
-            price: "",
-            quantity: "",
-            categoryId: "",
-        });
-
-        setOpen(true);
-    };
-
-    const handleEdit = (product) => {
-
-        setEditingProduct(product);
-
-        setFormData({
-            name: product.name,
-            price: product.price,
-            quantity: product.quantity,
-            categoryId: product.category.id,
-            minimumQuantity: product.minimumQuantity,
-        });
-
-        setOpen(true);
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            await deleteProduct(id);
-            loadProducts();
-        } catch (error) {
-
-            console.log("STATUS:");
-            console.log(error.response?.status);
-
-            console.log("DATA:");
-            console.log(error.response?.data);
-
-            console.log("HEADERS:");
-            console.log(error.response?.headers);
-
-            console.log(error);
-
-        }
-
-    }
-
-    const handleChange = (e) => {
-
-        let { name, value } = e.target;
-
-        if (name === "name") {
-            value = value.replace(/[^a-zA-ZÀ-ÿ0-9\s]/g, "");
-        }
-
-        if (
-            name === "quantity" ||
-            name === "minimumQuantity"
-        ) {
-            value = value.replace(/\D/g, "");
-        }
-
-        if (name === "price") {
-            value = value.replace(/[^0-9.]/g, "");
-        }
-
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
-
-
-    useEffect(() => {
-        loadProducts();
-        // eslint-disable-next-line react-hooks/immutability
-        loadCategories();
-    }, []);
-
-    async function loadProducts() {
-        try {
-            const data = await getProducts();
-            setProdutos(data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function loadCategories() {
-        try {
-            const data = await getCategories();
-            setCategories(data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    return (
-        <>
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
-                    justifyContent: "space-between",
-                    alignItems: { xs: "stretch", sm: "center" },
-                    gap: 2,
-                    mb: 3,
-                }}
-            >
-                <Typography
-                    variant="h4"
-                    fontWeight="bold"
-                    sx={{ fontSize: { xs: 28, sm: 34 } }}
-                >
-                    Produtos
-                </Typography>
-
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={handleOpen}
-                    sx={{
-                        borderRadius: 2,
-                        px: 3,
-                        py: 1.2,
-                        width: { xs: "100%", sm: "auto" },
-                    }}
-                >
-                    Novo Produto
-                </Button>
-            </Box>
-
-            <Box sx={{ mb: 3 }}>
-                <TextField
-                    fullWidth
-                    placeholder="Pesquisar produto..."
-                    variant="outlined"
-                    onChange={(e) => handleSearch(e.target.value)}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                    sx={{
-                        backgroundColor: "white",
-                        borderRadius: 2,
-                    }}
-                />
-            </Box>
-
-            <TableContainer
-                component={Paper}
-                sx={{
-                    borderRadius: 3,
-                    overflowX: "auto",
-                }}
-            >
-                <Table sx={{ minWidth: 650 }}>
-                    <TableHead
-                        sx={{
-                            backgroundColor: "#f5f7fb",
-                        }}
-                    >
-                        <TableRow>
-                            <TableCell>
-                                <strong>ID</strong>
-                            </TableCell>
-
-                            <TableCell>
-                                <strong>Nome</strong>
-                            </TableCell>
-
-                            <TableCell>
-                                <strong>Categoria</strong>
-                            </TableCell>
-
-                            <TableCell>
-                                <strong>Estoque</strong>
-                            </TableCell>
-
-                            <TableCell>
-                                <strong>Ações</strong>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                        {produtos.map((produto) => (
-                            <TableRow
-                                key={produto.id}
-                                hover
-                            >
-                                <TableCell>
-                                    {produto.id}
-                                </TableCell>
-
-                                <TableCell>
-                                    {produto.name}
-                                </TableCell>
-
-                                <TableCell>
-                                    {produto.category?.name}
-                                </TableCell>
-
-                                <TableCell>
-                                    <Chip
-                                        label={`${produto.quantity} un.`}
-                                        color={
-                                            produto.quantity > 30
-                                                ? "success"
-                                                : produto.quantity > 10
-                                                    ? "warning"
-                                                    : "error"
-                                        }
-                                        sx={{
-                                            fontWeight: "bold",
-                                            minWidth: 80,
-                                        }}
-                                    />
-                                </TableCell>
-
-                                <TableCell>
-                                    <IconButton
-                                        color="primary"
-                                        sx={{
-                                            backgroundColor: "#e3f2fd",
-                                            mr: 1,
-                                        }}
-
-                                        onClick={() => handleEdit(produto)}
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
-
-                                    <IconButton
-                                        color="error"
-                                        sx={{
-                                            backgroundColor: "#ffebee",
-                                        }}
-                                        onClick={() => handleDelete(produto.id)}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-            <Dialog
-                open={open}
-                onClose={() => setOpen(false)}
-                maxWidth="sm"
-                fullWidth
-                slotProps={{ paper: { sx: { m: { xs: 1.5, sm: 3 }, width: { xs: "calc(100% - 24px)", sm: "100%" } } } }}
-            >
-                <DialogTitle>
-                    {editingProduct
-                        ? "Editar Produto"
-                        : "Novo Produto"}
-                </DialogTitle>
-
-                <DialogContent>
-                    <TextField
-                        label="Nome"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-
-                    <TextField
-                        label="Preço"
-                        name="price"
-                        type="text"
-                        value={formData.price}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-
-                    <FormControl
-                        fullWidth
-                        margin="normal"
-                    >
-                        <InputLabel>
-                            Categoria
-                        </InputLabel>
-
-                        <Select
-                            name="categoryId"
-                            value={formData.categoryId}
-                            label="Categoria"
-                            onChange={handleChange}
-                        >
-                            {categories.map(
-                                (category) => (
-                                    <MenuItem
-                                        key={category.id}
-                                        value={category.id}
-                                    >
-                                        {category.name}
-                                    </MenuItem>
-                                )
-                            )}
-                        </Select>
-                    </FormControl>
-
-                    <TextField
-                        label="Quantidade"
-                        name="quantity"
-                        type="number"
-                        value={formData.quantity}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-
-                    <TextField
-                        fullWidth
-                        label="Quantidade Mínima"
-                        name="minimumQuantity"
-                        type="number"
-                        value={formData.minimumQuantity}
-                        onChange={handleChange}
-                    />
-                </DialogContent>
-
-                <DialogActions>
-                    <Button onClick={() => setOpen(false)}>
-                        Cancelar
-                    </Button>
-
-                    <Button
-                        variant="contained"
-                        onClick={handleSubmit}
-                    >
-                        Salvar
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-        </>
-    );
+import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteOutlineIcon from "@mui/icons-material/Delete";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import { createProduct, deleteProduct, getProducts, importProducts, updateProduct } from "../../services/productService";
+import { getCategories } from "../../services/categoryService";
+import { formatCurrency, getApiError } from "../../utils/formatters";
+import ProductFormDialog from "../../components/Products/ProductFormDialog";
+import ProductImportDialog from "../../components/Products/ProductImportDialog";
+import ProductAttachmentsDialog from "../../components/Products/ProductAttachmentsDialog";
+
+export default function Products() {
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]); const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true); const [saving, setSaving] = useState(false);
+  const [query, setQuery] = useState(""); const [category, setCategory] = useState(""); const [stock, setStock] = useState("");
+  const [formOpen, setFormOpen] = useState(false); const [editing, setEditing] = useState(null);
+  const [importOpen, setImportOpen] = useState(false); const [attachments, setAttachments] = useState(null); const [deleting, setDeleting] = useState(null);
+  const [toast, setToast] = useState({ open: false, message: "", severity: "success" });
+  const notify = (message, severity = "success") => setToast({ open: true, message, severity });
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { const [productData, categoryData] = await Promise.all([getProducts(), getCategories()]); setProducts(productData || []); setCategories(categoryData || []); }
+    catch (error) { notify(getApiError(error, "Não foi possível carregar os produtos."), "error"); }
+    finally { setLoading(false); }
+  }, []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+  }, [load]);
+
+  const filtered = useMemo(() => products.filter((product) => {
+    const text = `${product.internalCode || ""} ${product.name} ${product.brand || ""} ${product.sku || ""}`.toLowerCase();
+    const matchesStock = !stock || (stock === "OUT" ? product.quantity === 0 : stock === "LOW" ? product.quantity > 0 && product.quantity <= product.minimumQuantity : product.quantity > product.minimumQuantity);
+    return text.includes(query.trim().toLowerCase()) && (!category || product.category?.id === category) && matchesStock;
+  }), [products, query, category, stock]);
+
+  const save = async (payload) => {
+    setSaving(true);
+    try { if (editing) await updateProduct(editing.id, payload); else await createProduct(payload); notify(editing ? "Produto atualizado com sucesso." : "Produto salvo com sucesso."); setFormOpen(false); setEditing(null); await load(); }
+    catch (error) { const fields = error.response?.data?.errors; notify(fields ? Object.values(fields)[0] : getApiError(error), "error"); }
+    finally { setSaving(false); }
+  };
+  const confirmDelete = async () => { setSaving(true); try { await deleteProduct(deleting.id); notify("Produto excluído com sucesso."); setDeleting(null); await load(); } catch (e) { notify(getApiError(e), "error"); } finally { setSaving(false); } };
+  const runImport = async (items) => { setSaving(true); try { await importProducts(items); notify(`${items.length} produtos importados com sucesso.`); setImportOpen(false); await load(); } catch (e) { notify(getApiError(e, "A importação não pôde ser concluída."), "error"); } finally { setSaving(false); } };
+  const activeCategories = categories.filter((item) => item.active !== false);
+
+  return <Box sx={{ minWidth: 0 }}>
+    <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, justifyContent: "space-between", alignItems: { xs: "stretch", sm: "center" }, gap: 2, mb: 3 }}>
+      <Box><Typography variant="h4" fontWeight={800} sx={{ fontSize: { xs: 28, sm: 34 } }}>Produtos</Typography><Typography color="text.secondary">Cadastre, localize e acompanhe os itens do seu inventário.</Typography></Box>
+      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", "& .MuiButton-root": { flex: { xs: "1 1 150px", sm: "0 0 auto" } } }}>
+        <Button variant="outlined" startIcon={<UploadFileIcon />} onClick={() => setImportOpen(true)}>Importar produtos</Button>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => { setEditing(null); setFormOpen(true); }}>Novo produto</Button>
+      </Box>
+    </Box>
+
+    {!loading && activeCategories.length === 0 && <Alert severity="warning" sx={{ mb: 2 }} action={<Button color="inherit" onClick={() => navigate("/categories")}>Cadastrar categoria</Button>}>Nenhuma categoria encontrada. Cadastre uma categoria antes de criar produtos.</Alert>}
+
+    <Paper variant="outlined" sx={{ p: 2, mb: 2, borderRadius: 2 }}>
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "minmax(260px,1fr) 220px 190px" }, gap: 1.5 }}>
+        <TextField placeholder="Buscar por código, nome, SKU ou marca" value={query} onChange={(e) => setQuery(e.target.value)} slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment> } }} />
+        <FormControl><InputLabel>Categoria</InputLabel><Select value={category} label="Categoria" onChange={(e) => setCategory(e.target.value)}><MenuItem value="">Todas</MenuItem>{activeCategories.map((item) => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)}</Select></FormControl>
+        <FormControl><InputLabel>Estoque</InputLabel><Select value={stock} label="Estoque" onChange={(e) => setStock(e.target.value)}><MenuItem value="">Todos</MenuItem><MenuItem value="OK">Regular</MenuItem><MenuItem value="LOW">Baixo</MenuItem><MenuItem value="OUT">Sem estoque</MenuItem></Select></FormControl>
+      </Box>
+    </Paper>
+
+    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, overflowX: "auto" }}><Table sx={{ minWidth: 760 }}>
+      <TableHead sx={{ bgcolor: "#f8fafc" }}><TableRow><TableCell><strong>Código</strong></TableCell><TableCell><strong>Produto</strong></TableCell><TableCell><strong>Categoria</strong></TableCell><TableCell><strong>Marca</strong></TableCell><TableCell align="right"><strong>Quantidade</strong></TableCell><TableCell align="right"><strong>Valor</strong></TableCell><TableCell align="right"><strong>Ações</strong></TableCell></TableRow></TableHead>
+      <TableBody>
+        {loading && Array.from({ length: 5 }).map((_, index) => <TableRow key={index}>{Array.from({ length: 7 }).map((__, cell) => <TableCell key={cell}><Skeleton /></TableCell>)}</TableRow>)}
+        {!loading && filtered.map((product) => { const low = product.quantity <= product.minimumQuantity; return <TableRow hover key={product.id}>
+          <TableCell>{product.internalCode || product.sku || "-"}</TableCell>
+          <TableCell><Typography fontWeight={700}>{product.name}</Typography><Typography variant="caption" color="text.secondary">{product.model || product.physicalLocation || "Sem complemento"}</Typography></TableCell>
+          <TableCell>{product.category?.name || "-"}</TableCell><TableCell>{product.brand || "-"}</TableCell>
+          <TableCell align="right"><Chip size="small" label={`${product.quantity} un.`} color={product.quantity === 0 ? "error" : low ? "warning" : "success"} /></TableCell>
+          <TableCell align="right">{formatCurrency(product.price)}</TableCell>
+          <TableCell align="right"><Tooltip title="Anexos"><IconButton onClick={() => setAttachments(product)}><AttachFileIcon /></IconButton></Tooltip><Tooltip title="Editar"><IconButton color="primary" onClick={() => { setEditing(product); setFormOpen(true); }}><EditIcon /></IconButton></Tooltip><Tooltip title="Excluir"><IconButton color="error" onClick={() => setDeleting(product)}><DeleteOutlineIcon /></IconButton></Tooltip></TableCell>
+        </TableRow>; })}
+        {!loading && !filtered.length && <TableRow><TableCell colSpan={7}><Box sx={{ py: 7, textAlign: "center" }}><Inventory2OutlinedIcon sx={{ fontSize: 48, color: "text.disabled" }} /><Typography fontWeight={700}>Nenhum produto encontrado</Typography><Typography color="text.secondary">Ajuste os filtros ou cadastre o primeiro item.</Typography></Box></TableCell></TableRow>}
+      </TableBody>
+    </Table></TableContainer>
+
+    <ProductFormDialog key={`${editing?.id || "new"}-${formOpen}`} open={formOpen} product={editing} categories={categories} loading={saving} onClose={() => setFormOpen(false)} onSave={save} />
+    <ProductImportDialog open={importOpen} categories={categories} loading={saving} onClose={() => setImportOpen(false)} onImport={runImport} />
+    <ProductAttachmentsDialog open={Boolean(attachments)} product={attachments} onClose={() => setAttachments(null)} notify={notify} />
+    <Dialog open={Boolean(deleting)} onClose={() => !saving && setDeleting(null)}><DialogTitle>Excluir produto?</DialogTitle><DialogContent>O produto <strong>{deleting?.name}</strong> será removido das listagens. Essa ação não apaga o histórico de movimentações.</DialogContent><DialogActions><Button onClick={() => setDeleting(null)}>Cancelar</Button><Button color="error" variant="contained" onClick={confirmDelete} disabled={saving}>Excluir</Button></DialogActions></Dialog>
+    <Snackbar open={toast.open} autoHideDuration={4500} onClose={() => setToast((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}><Alert severity={toast.severity} variant="filled" onClose={() => setToast((current) => ({ ...current, open: false }))}>{toast.message}</Alert></Snackbar>
+  </Box>;
 }
-
-export default Products;

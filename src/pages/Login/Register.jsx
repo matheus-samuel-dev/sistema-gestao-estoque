@@ -25,6 +25,8 @@ import AuthBrandPanel from "../../components/Auth/AuthBrandPanel";
 import AuthFooter from "../../components/Auth/AuthFooter";
 import { register } from "../../services/authService";
 import { isValidEmail } from "../../utils/validators";
+import { isStrongPassword } from "../../utils/validators";
+import PasswordStrength from "../../components/Auth/PasswordStrength";
 
 function Register() {
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ function Register() {
   const fieldErrors = {
     name: formData.name.trim().length < 3 ? "Informe um nome com pelo menos 3 caracteres." : "",
     email: !isValidEmail(formData.email) ? "Informe um e-mail válido." : "",
-    password: formData.password.length < 6 ? "A senha deve ter pelo menos 6 caracteres." : "",
+    password: !isStrongPassword(formData.password) ? "Use 8 caracteres com maiúscula, minúscula, número e símbolo." : "",
     confirmPassword: !formData.confirmPassword
       ? "Confirme sua senha."
       : formData.password !== formData.confirmPassword
@@ -239,6 +241,8 @@ function Register() {
             }}
             sx={inputSx}
           />
+
+          <PasswordStrength password={formData.password} />
 
           <TextField
             fullWidth
