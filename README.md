@@ -99,21 +99,21 @@ API REST responsável pela autenticação JWT, regras de negócio, segurança e 
 
 # 📸 Preview
 
-## 🔐 Login
+### 📊 Dashboard
 
-![Login](./docs/login.png)
+<p align="center">
+  <img src="./docs/dashboard.png" width="100%">
+</p>
 
-## 📊 Dashboard
+### 🔍 Principais Telas
 
-![Dashboard](./docs/dashboard.png)
+| 🔐 Login              | 📈 Movimentações              |
+| --------------------- | ----------------------------- |
+| ![](./docs/login.png) | ![](./docs/movimentacoes.png) |
 
-## 📈 Movimentações
-
-![Movimentações](./docs/movimentacoes.png)
-
-## 📦 Produtos
-
-![Produtos](./docs/produtos.png)
+| 📦 Produtos              | 📊 Dashboard              |
+| ------------------------ | ------------------------- |
+| ![](./docs/produtos.png) | ![](./docs/dashboard.png) |
 
 ---
 
