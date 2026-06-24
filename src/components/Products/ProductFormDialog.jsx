@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import {
-  Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle,
+  Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
   Divider, FormControl, FormHelperText, Grid, InputAdornment, InputLabel,
   MenuItem, Select, TextField, Typography,
 } from "@mui/material";
@@ -8,25 +8,68 @@ import { useNavigate } from "react-router-dom";
 import { currencyInput, formatCurrency, parseCurrency } from "../../utils/formatters";
 
 const ORIGINS = [
-  ["PURCHASE", "Compra"], ["DONATION", "Doação"], ["TRANSFER", "Transferência"],
-  ["INTERNAL_PRODUCTION", "Produção interna"], ["STOCK_ADJUSTMENT", "Ajuste de estoque"], ["OTHER", "Outro"],
+  ["COMPRA", "Compra"],
+  ["VENDA", "Venda"],
+  ["AJUSTE", "Ajuste"],
+  ["TRANSFERENCIA", "Transferência"],
+  ["DEVOLUCAO", "Devolução"],
+  ["OUTRO", "Outro"],
 ];
 
-const emptyForm = {
-  name: "", internalCode: "", sku: "", barcode: "", serialNumber: "",
-  description: "", brand: "", model: "", categoryId: "", physicalLocation: "",
-  price: "", quantity: "", minimumQuantity: "", origin: "PURCHASE", notes: "",
+const SUGGESTIONS = {
+  informática: ["Mouse", "Teclado", "Monitor", "Notebook", "Impressora"],
+  perifericos: ["Mouse", "Teclado", "Headset", "Webcam", "Cabo HDMI"],
+  periféricos: ["Mouse", "Teclado", "Headset", "Webcam", "Cabo HDMI"],
+  celulares: ["Smartphone", "Carregador", "Película", "Fone Bluetooth"],
+  escritório: ["Cadeira", "Mesa", "Grampeador", "Impressora"],
+  "material de escritório": ["Cadeira", "Mesa", "Grampeador", "Papel A4"],
 };
 
-export default function ProductFormDialog({ open, product, categories, loading, onClose, onSave }) {
+const emptyForm = {
+  name: "",
+  internalCode: "",
+  sku: "",
+  barcode: "",
+  serialNumber: "",
+  description: "",
+  brand: "",
+  model: "",
+  categoryId: "",
+  supplierId: "",
+  physicalLocation: "",
+  price: "",
+  quantity: "",
+  minimumQuantity: "",
+  origin: "COMPRA",
+  notes: "",
+};
+
+export default function ProductFormDialog({
+  open,
+  product,
+  categories,
+  suppliers = [],
+  loading,
+  onClose,
+  onSave,
+}) {
   const navigate = useNavigate();
   const [form, setForm] = useState(() => product ? {
-    ...emptyForm, ...product, categoryId: product.category?.id || "",
-    price: formatCurrency(product.price), quantity: String(product.quantity ?? ""),
-    minimumQuantity: String(product.minimumQuantity ?? ""), origin: product.origin || "OTHER",
+    ...emptyForm,
+    ...product,
+    categoryId: product.category?.id || "",
+    supplierId: product.supplier?.id || "",
+    price: formatCurrency(product.price),
+    quantity: String(product.quantity ?? ""),
+    minimumQuantity: String(product.minimumQuantity ?? ""),
+    origin: product.origin || "OUTRO",
   } : emptyForm);
   const [touched, setTouched] = useState({});
+
   const activeCategories = useMemo(() => categories.filter((item) => item.active !== false), [categories]);
+  const activeSuppliers = useMemo(() => suppliers.filter((item) => item.active !== false), [suppliers]);
+  const selectedCategory = activeCategories.find((item) => item.id === form.categoryId);
+  const suggestions = SUGGESTIONS[selectedCategory?.name?.toLowerCase()] || [];
 
   const errors = {
     name: !form.name.trim() ? "Nome é obrigatório" : "",
@@ -46,6 +89,8 @@ export default function ProductFormDialog({ open, product, categories, loading, 
     onSave({
       ...form,
       name: form.name.trim(),
+      internalCode: form.internalCode.trim() || null,
+      supplierId: form.supplierId || null,
       price: parseCurrency(form.price),
       quantity: Number(form.quantity),
       minimumQuantity: Number(form.minimumQuantity),
@@ -57,12 +102,18 @@ export default function ProductFormDialog({ open, product, categories, loading, 
   );
 
   return (
-    <Dialog open={open} onClose={loading ? undefined : onClose} fullWidth maxWidth="md"
-      slotProps={{ paper: { sx: { m: { xs: 1, sm: 3 }, width: { xs: "calc(100% - 16px)", sm: "100%" }, maxHeight: "calc(100dvh - 24px)" } } }}>
+    <Dialog
+      open={open}
+      onClose={loading ? undefined : onClose}
+      fullWidth
+      maxWidth="md"
+      slotProps={{ paper: { sx: { m: { xs: 1, sm: 3 }, width: { xs: "calc(100% - 16px)", sm: "100%" }, maxHeight: "calc(100dvh - 24px)" } } }}
+    >
       <DialogTitle sx={{ pb: 1 }}>
         <Typography variant="h6" fontWeight={800}>{product ? "Editar produto" : "Novo produto"}</Typography>
         <Typography variant="body2" color="text.secondary">Organize as informações essenciais e complemente conforme o seu negócio.</Typography>
       </DialogTitle>
+
       <DialogContent dividers>
         {activeCategories.length === 0 && (
           <Alert severity="warning" sx={{ mb: 3 }} action={<Button color="inherit" size="small" onClick={() => navigate("/categories")}>Cadastrar categoria</Button>}>
@@ -72,8 +123,10 @@ export default function ProductFormDialog({ open, product, categories, loading, 
 
         <Typography variant="overline" color="primary" fontWeight={800}>Identificação</Typography>
         <Grid container spacing={2} sx={{ mt: 0.25 }}>
-          <Grid size={{ xs: 12, md: 8 }}><TextField fullWidth required label="Nome" value={form.name} onChange={setValue("name")} onBlur={blur("name")} error={Boolean(touched.name && errors.name)} helperText={touched.name && errors.name} /></Grid>
-          <Grid size={{ xs: 12, md: 4 }}>{field("internalCode", "Código interno")}</Grid>
+          <Grid size={{ xs: 12, md: 8 }}>
+            <TextField fullWidth required label="Nome" value={form.name} onChange={setValue("name")} onBlur={blur("name")} error={Boolean(touched.name && errors.name)} helperText={touched.name && errors.name} />
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>{field("internalCode", "Código interno", { placeholder: "Gerado automaticamente" })}</Grid>
           <Grid size={{ xs: 12, sm: 6 }}>{field("sku", "SKU")}</Grid>
           <Grid size={{ xs: 12, sm: 6 }}>{field("barcode", "Código de barras")}</Grid>
           <Grid size={{ xs: 12, sm: 6 }}>{field("serialNumber", "Número de série")}</Grid>
@@ -96,17 +149,46 @@ export default function ProductFormDialog({ open, product, categories, loading, 
             </FormControl>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <FormControl fullWidth><InputLabel>Origem</InputLabel><Select value={form.origin} label="Origem" onChange={setValue("origin")}>{ORIGINS.map(([value, label]) => <MenuItem key={value} value={value}>{label}</MenuItem>)}</Select></FormControl>
+            <FormControl fullWidth>
+              <InputLabel>Fornecedor</InputLabel>
+              <Select value={form.supplierId} label="Fornecedor" onChange={setValue("supplierId")}>
+                <MenuItem value="">Sem fornecedor</MenuItem>
+                {activeSuppliers.map((supplier) => <MenuItem key={supplier.id} value={supplier.id}>{supplier.name}</MenuItem>)}
+              </Select>
+            </FormControl>
+          </Grid>
+          {suggestions.length > 0 && (
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="caption" color="text.secondary">Sugestões para {selectedCategory?.name}</Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 0.75 }}>
+                {suggestions.map((item) => <Chip key={item} label={item} onClick={() => setForm((current) => ({ ...current, name: item }))} clickable />)}
+              </Box>
+            </Grid>
+          )}
+          <Grid size={{ xs: 12, md: 6 }}>
+            <FormControl fullWidth>
+              <InputLabel>Origem</InputLabel>
+              <Select value={form.origin} label="Origem" onChange={setValue("origin")}>
+                {ORIGINS.map(([value, label]) => <MenuItem key={value} value={value}>{label}</MenuItem>)}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
             <TextField fullWidth required label="Valor unitário" value={form.price} onChange={(event) => setForm((current) => ({ ...current, price: currencyInput(event.target.value) }))} onBlur={blur("price")} error={Boolean(touched.price && errors.price)} helperText={touched.price && errors.price} />
           </Grid>
-          <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth required type="number" label="Quantidade" value={form.quantity} onChange={setValue("quantity")} onBlur={blur("quantity")} error={Boolean(touched.quantity && errors.quantity)} helperText={touched.quantity && errors.quantity} slotProps={{ htmlInput: { min: 0 } }} /></Grid>
-          <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth required type="number" label="Estoque mínimo" value={form.minimumQuantity} onChange={setValue("minimumQuantity")} onBlur={blur("minimumQuantity")} error={Boolean(touched.minimumQuantity && errors.minimumQuantity)} helperText={touched.minimumQuantity && errors.minimumQuantity} slotProps={{ htmlInput: { min: 0 } }} /></Grid>
-          <Grid size={{ xs: 12 }}><TextField fullWidth label="Valor total em estoque" value={formatCurrency(parseCurrency(form.price) * (Number(form.quantity) || 0))} disabled slotProps={{ input: { startAdornment: <InputAdornment position="start">∑</InputAdornment> } }} /></Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <TextField fullWidth required type="number" label="Quantidade" value={form.quantity} onChange={setValue("quantity")} onBlur={blur("quantity")} error={Boolean(touched.quantity && errors.quantity)} helperText={touched.quantity && errors.quantity} slotProps={{ htmlInput: { min: 0 } }} />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <TextField fullWidth required type="number" label="Estoque mínimo" value={form.minimumQuantity} onChange={setValue("minimumQuantity")} onBlur={blur("minimumQuantity")} error={Boolean(touched.minimumQuantity && errors.minimumQuantity)} helperText={touched.minimumQuantity && errors.minimumQuantity} slotProps={{ htmlInput: { min: 0 } }} />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <TextField fullWidth label="Valor total em estoque" value={formatCurrency(parseCurrency(form.price) * (Number(form.quantity) || 0))} disabled slotProps={{ input: { startAdornment: <InputAdornment position="start">Σ</InputAdornment> } }} />
+          </Grid>
           <Grid size={{ xs: 12 }}>{field("notes", "Observações", { multiline: true, minRows: 2 })}</Grid>
         </Grid>
       </DialogContent>
+
       <DialogActions sx={{ px: 3, py: 2, flexWrap: "wrap" }}>
         <Button onClick={onClose} disabled={loading}>Cancelar</Button>
         <Button variant="contained" onClick={submit} disabled={loading || !valid}>{loading ? "Salvando..." : "Salvar produto"}</Button>

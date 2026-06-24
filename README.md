@@ -333,3 +333,95 @@ https://matheus-samuel-dev.github.io/Portfolio/
 https://www.linkedin.com/in/matheus-samuel-dev/
 
 ⭐ Se gostou do projeto, considere deixar uma estrela no repositório.
+---
+
+# Documentacao do Produto
+
+## Objetivo do sistema
+
+O Sistema de Gestao de Estoque centraliza o cadastro de produtos, categorias, fornecedores, movimentacoes, anexos e indicadores operacionais em uma aplicacao web para uso real.
+
+## Publico-alvo
+
+Pequenos comercios, escritorios, assistencias tecnicas, distribuidores, almoxarifados, mercados, farmacias e equipes que precisam controlar entradas, saidas e saldo de estoque sem depender de planilhas manuais.
+
+## Casos de uso
+
+* Cadastrar categorias, fornecedores e produtos.
+* Controlar entradas, saidas, devolucoes, ajustes e transferencias.
+* Acompanhar produtos com estoque baixo ou zerado.
+* Importar produtos em massa por CSV/XLSX.
+* Anexar notas fiscais, comprovantes e imagens.
+* Configurar dados da empresa e preferencias do estoque.
+* Visualizar indicadores em dashboard.
+
+## Tecnologias utilizadas
+
+Frontend: React, Vite, Material UI, React Router, Axios, Recharts, XLSX e jsPDF.
+
+Backend: Java, Spring Boot, Spring Security, JWT, Spring Data JPA, PostgreSQL e Resend API.
+
+## Como rodar localmente
+
+Frontend:
+
+```bash
+npm install
+npm run dev
+```
+
+Backend:
+
+```bash
+./mvnw spring-boot:run
+```
+
+## Como fazer deploy
+
+* Frontend: Vercel, configurando `VITE_API_URL` com a URL da API.
+* Backend: Railway, configurando PostgreSQL e variaveis de ambiente.
+* Enquanto o projeto evolui, manter `JPA_DDL_AUTO=update`.
+
+## Estrutura do banco
+
+* `users`: usuarios.
+* `categories`: categorias por usuario.
+* `suppliers`: fornecedores por usuario.
+* `products`: produtos, categoria, fornecedor, origem, codigos e estoque.
+* `stock_movements`: entradas, saidas, origem, observacoes e usuario.
+* `attachments`: arquivos vinculados a produtos ou movimentacoes.
+* `password_reset_tokens`: tokens temporarios de recuperacao de senha.
+* `system_settings`: configuracoes da empresa, estoque e onboarding.
+
+## Fluxo de autenticacao JWT
+
+1. O usuario autentica em `/auth/login`.
+2. O backend valida credenciais e retorna JWT.
+3. O frontend salva o token em `localStorage` ou `sessionStorage`.
+4. Todas as chamadas autenticadas enviam `Authorization: Bearer <token>`.
+5. Token expirado ou invalido redireciona o usuario para `/login`.
+
+## Funcionalidade de anexos
+
+* Endpoints: `POST /attachments/products/{id}`, `POST /attachments/movements/{id}`, `GET /attachments/products/{id}`, `GET /attachments/movements/{id}`, `GET /attachments/{id}/download` e `DELETE /attachments/{id}`.
+* Formatos aceitos: PDF, JPG, JPEG, PNG e WEBP.
+* Limite maximo: 5MB.
+* Os anexos respeitam o usuario autenticado.
+
+## Funcionalidade de importacao CSV/XLSX
+
+* Disponivel na tela Produtos.
+* O usuario baixa um modelo de planilha.
+* O frontend le o arquivo, mostra pre-visualizacao e valida linhas.
+* Linhas invalidas exibem erro antes do envio.
+* O backend recebe a lista validada em `POST /products/import`.
+
+## Funcionalidades recentes
+
+* CRUD de fornecedores.
+* Configuracoes do sistema.
+* Onboarding inicial.
+* Codigo automatico `PRD-001`, `PRD-002`, `PRD-003`.
+* Sugestoes de produtos por categoria.
+* Origens de movimentacao: Compra, Venda, Ajuste, Transferencia, Devolucao e Outro.
+* Dashboard com entradas e saidas do mes.

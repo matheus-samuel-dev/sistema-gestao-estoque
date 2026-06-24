@@ -54,6 +54,25 @@ import {
 } from "../../services/stockMovementService";
 import MovementAttachmentsDialog from "../../components/Movements/MovementAttachmentsDialog";
 
+const ORIGIN_OPTIONS = [
+    ["COMPRA", "Compra"],
+    ["VENDA", "Venda"],
+    ["AJUSTE", "Ajuste"],
+    ["TRANSFERENCIA", "Transferência"],
+    ["DEVOLUCAO", "Devolução"],
+    ["OUTRO", "Outro"],
+];
+
+const ORIGIN_LABELS = Object.fromEntries(ORIGIN_OPTIONS);
+const ORIGIN_COLORS = {
+    COMPRA: "info",
+    VENDA: "success",
+    AJUSTE: "warning",
+    TRANSFERENCIA: "primary",
+    DEVOLUCAO: "secondary",
+    OUTRO: "default",
+};
+
 async function loadExcelTools() {
     const [XLSX, fileSaver] = await Promise.all([
         import("xlsx"),
@@ -84,7 +103,7 @@ function Movements() {
     const [quantity, setQuantity] = useState("");
 
     const [type, setType] = useState("ENTRY");
-    const [origin, setOrigin] = useState("PURCHASE");
+    const [origin, setOrigin] = useState("COMPRA");
     const [notes, setNotes] = useState("");
     const [saving, setSaving] = useState(false);
     const [attachmentTarget, setAttachmentTarget] = useState(null);
@@ -161,6 +180,12 @@ function Movements() {
                     createdBy:
                         movement.createdBy,
 
+                    origin:
+                        movement.origin,
+
+                    notes:
+                        movement.notes,
+
                     createdAt:
                         new Date(
                             movement.createdAt
@@ -207,7 +232,7 @@ function Movements() {
             setQuantity("");
 
             setType("ENTRY");
-            setOrigin("PURCHASE");
+            setOrigin("COMPRA");
             setNotes("");
 
             loadMovements();
@@ -303,9 +328,30 @@ function Movements() {
         },
 
         {
+            field: "origin",
+            headerName: "Origem",
+            flex: 1,
+
+            renderCell: (params) => (
+                <Chip
+                    size="small"
+                    label={ORIGIN_LABELS[params.value] || params.value || "Outro"}
+                    color={ORIGIN_COLORS[params.value] || "default"}
+                />
+            )
+        },
+
+        {
             field: "createdBy",
             headerName: "Usuário",
             flex: 1
+        },
+
+        {
+            field: "notes",
+            headerName: "Observações",
+            flex: 1.4,
+            valueGetter: (value) => value || "-"
         },
 
         {
@@ -445,7 +491,9 @@ function Movements() {
                     ? "Entrada"
                     : "Saída",
             Quantidade: row.quantity,
+            Origem: ORIGIN_LABELS[row.origin] || row.origin || "Outro",
             Usuário: row.createdBy,
+            Observações: row.notes || "",
             Data: row.createdAt
         }));
 
@@ -508,7 +556,9 @@ function Movements() {
                 "Produto",
                 "Tipo",
                 "Quantidade",
+                "Origem",
                 "Usuário",
+                "Observações",
                 "Data"
             ]],
 
@@ -519,7 +569,9 @@ function Movements() {
                         ? "Entrada"
                         : "Saída",
                     row.quantity,
+                    ORIGIN_LABELS[row.origin] || row.origin || "Outro",
                     row.createdBy,
+                    row.notes || "",
                     row.createdAt
                 ]
             )
@@ -1063,12 +1115,12 @@ function Movements() {
                         value={origin}
                         onChange={(e) => setOrigin(e.target.value)}
                     >
-                        <MenuItem value="PURCHASE">Compra</MenuItem>
-                        <MenuItem value="DONATION">Doação</MenuItem>
-                        <MenuItem value="TRANSFER">Transferência</MenuItem>
-                        <MenuItem value="INTERNAL_PRODUCTION">Produção interna</MenuItem>
-                        <MenuItem value="STOCK_ADJUSTMENT">Ajuste de estoque</MenuItem>
-                        <MenuItem value="OTHER">Outro</MenuItem>
+                        <MenuItem value="COMPRA">Compra</MenuItem>
+                        <MenuItem value="VENDA">Venda</MenuItem>
+                        <MenuItem value="AJUSTE">Ajuste</MenuItem>
+                        <MenuItem value="TRANSFERENCIA">Transferência</MenuItem>
+                        <MenuItem value="DEVOLUCAO">Devolução</MenuItem>
+                        <MenuItem value="OUTRO">Outro</MenuItem>
                     </TextField>
 
                     <TextField fullWidth multiline minRows={2} label="Observações" value={notes} onChange={(e) => setNotes(e.target.value)} sx={{ mb: 2 }} />

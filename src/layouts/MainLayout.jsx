@@ -1,12 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import OnboardingDialog from "../components/Onboarding/OnboardingDialog";
+import { getSettings } from "../services/settingsService";
 
 function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await getSettings();
+        setShowOnboarding(settings.onboardingCompleted === false);
+      } catch {
+        setShowOnboarding(false);
+      }
+    };
+    loadSettings();
+  }, []);
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", overflowX: "hidden" }}>
@@ -36,6 +51,7 @@ function MainLayout() {
           <Outlet />
         </Box>
       </Box>
+      <OnboardingDialog open={showOnboarding} onDone={() => setShowOnboarding(false)} />
     </Box>
   );
 }

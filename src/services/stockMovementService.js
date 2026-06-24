@@ -21,7 +21,9 @@ export const deleteMovement = async (id) => {
 export const uploadMovementAttachment = async (movementId, file) => {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await api.post(`/attachments/movements/${movementId}`, formData);
+    const response = await api.post(`/attachments/movements/${movementId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
     return response.data;
 };
 

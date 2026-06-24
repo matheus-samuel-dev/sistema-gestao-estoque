@@ -15,6 +15,8 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import CategoryIcon from "@mui/icons-material/Category";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import LogoutIcon from "@mui/icons-material/Logout";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -41,9 +43,19 @@ function Sidebar({ mobileOpen, onClose }) {
             path: "/categories",
         },
         {
+            text: "Fornecedores",
+            icon: <LocalShippingIcon />,
+            path: "/suppliers",
+        },
+        {
             text: "Movimentações",
             icon: <SwapHorizIcon />,
             path: "/movements",
+        },
+        {
+            text: "Configurações",
+            icon: <SettingsIcon />,
+            path: "/settings",
         },
     ];
 

@@ -11,6 +11,8 @@ const Dashboard = lazy(() => import("../pages/Dashboard/Dashboard"));
 const Products = lazy(() => import("../pages/Products/Products"));
 const Categories = lazy(() => import("../pages/Categories/Categories"));
 const Movements = lazy(() => import("../pages/Movements/Movements"));
+const Suppliers = lazy(() => import("../pages/Suppliers/Suppliers"));
+const Settings = lazy(() => import("../pages/Settings/Settings"));
 
 function RouteFallback() {
     return (
@@ -62,8 +64,18 @@ function AppRoutes() {
                         />
 
                         <Route
+                            path="/suppliers"
+                            element={<Suppliers />}
+                        />
+
+                        <Route
                             path="/movements"
                             element={<Movements />}
+                        />
+
+                        <Route
+                            path="/settings"
+                            element={<Settings />}
                         />
                     </Route>
 

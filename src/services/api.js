@@ -18,7 +18,7 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && !window.location.pathname.startsWith("/login")) {
+    if ([401, 403].includes(error.response?.status) && !window.location.pathname.startsWith("/login")) {
       localStorage.removeItem("token");
       sessionStorage.removeItem("token");
       window.location.assign("/login");

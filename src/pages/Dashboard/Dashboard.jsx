@@ -27,6 +27,8 @@ import {
     Pie,
     Cell,
     Legend,
+    LineChart,
+    Line,
 } from "recharts";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
@@ -35,6 +37,8 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 
 import DashboardCard from "../../components/Dashboard/DashboardCard";
 
@@ -62,10 +66,13 @@ function Dashboard() {
         outOfStock: 0,
         movements: 0,
         stockValue: 0,
+        entriesThisMonth: 0,
+        exitsThisMonth: 0,
     });
 
     const [categoryData, setCategoryData] = useState([]);
     const [movementSummary, setMovementSummary] = useState([]);
+    const [stockEvolution, setStockEvolution] = useState([]);
     const [latestMovements, setLatestMovements] = useState([]);
     const [latestProducts, setLatestProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -125,6 +132,20 @@ function Dashboard() {
                         quantidade: saidas,
                     },
                 ]);
+
+                let balance = 0;
+                setStockEvolution(
+                    [...movements]
+                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                        .map((movement) => {
+                            const quantity = Number(movement.quantity) || 0;
+                            balance += movement.type === "ENTRY" ? quantity : -quantity;
+                            return {
+                                data: movement.createdAt ? new Date(movement.createdAt).toLocaleDateString("pt-BR") : "-",
+                                saldo: balance,
+                            };
+                        })
+                );
             } catch (error) {
                 setError(getApiError(error, "Não foi possível carregar os indicadores."));
             } finally {
@@ -152,8 +173,8 @@ function Dashboard() {
                 sx={{ alignItems: "stretch" }}
             >
                 {error && <Grid size={{ xs: 12 }}><Alert severity="error">{error}</Alert></Grid>}
-                {loading && Array.from({ length: 6 }).map((_, index) => <Grid key={index} size={{ xs: 12, sm: 6, lg: 2 }}><Skeleton variant="rounded" height={180} /></Grid>)}
-                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                {loading && Array.from({ length: 8 }).map((_, index) => <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}><Skeleton variant="rounded" height={180} /></Grid>)}
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
                     <DashboardCard
                         title="PRODUTOS"
                         value={stats.products}
@@ -163,7 +184,7 @@ function Dashboard() {
                     />
                 </Grid>}
 
-                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
                     <DashboardCard
                         title="CATEGORIAS"
                         value={stats.categories}
@@ -173,7 +194,7 @@ function Dashboard() {
                     />
                 </Grid>}
 
-                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
                     <DashboardCard
                         title="ESTOQUE BAIXO"
                         value={stats.lowStock}
@@ -183,7 +204,7 @@ function Dashboard() {
                     />
                 </Grid>}
 
-                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
                     <DashboardCard
                         title="SEM ESTOQUE"
                         value={stats.outOfStock}
@@ -193,7 +214,7 @@ function Dashboard() {
                     />
                 </Grid>}
 
-                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
                     <DashboardCard
                         title="MOVIMENTAÇÕES"
                         value={stats.movements}
@@ -203,8 +224,16 @@ function Dashboard() {
                     />
                 </Grid>}
 
-                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 2 }}>
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
                     <DashboardCard title="VALOR EM ESTOQUE" value={formatCurrency(stats.stockValue)} subtitle="Capital imobilizado" icon={<PaymentsOutlinedIcon />} color="#00897b" />
+                </Grid>}
+
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+                    <DashboardCard title="ENTRADAS DO MÊS" value={stats.entriesThisMonth} subtitle="Movimentações de entrada" icon={<TrendingUpIcon />} color="#2e7d32" />
+                </Grid>}
+
+                {!loading && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+                    <DashboardCard title="SAÍDAS DO MÊS" value={stats.exitsThisMonth} subtitle="Movimentações de saída" icon={<TrendingDownIcon />} color="#c62828" />
                 </Grid>}
 
                 <Grid size={{ xs: 12, xl: 8 }}>
@@ -279,6 +308,43 @@ function Dashboard() {
 
                                 <Legend />
                             </PieChart>
+                        </ResponsiveContainer>
+                    </Paper>
+                </Grid>
+
+                <Grid size={{ xs: 12 }}>
+                    <Paper
+                        sx={{
+                            p: { xs: 2, sm: 3 },
+                            borderRadius: 3,
+                            minWidth: 0,
+                        }}
+                    >
+                        <Typography
+                            variant="h6"
+                            fontWeight="bold"
+                            gutterBottom
+                        >
+                            Evolução do Estoque
+                        </Typography>
+
+                        <ResponsiveContainer
+                            width="100%"
+                            height={280}
+                        >
+                            <LineChart data={stockEvolution}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="data" />
+                                <YAxis allowDecimals={false} />
+                                <Tooltip />
+                                <Line
+                                    type="monotone"
+                                    dataKey="saldo"
+                                    stroke="#00897b"
+                                    strokeWidth={3}
+                                    dot={{ r: 3 }}
+                                />
+                            </LineChart>
                         </ResponsiveContainer>
                     </Paper>
                 </Grid>

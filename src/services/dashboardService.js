@@ -9,6 +9,8 @@ export const getDashboardData = async () => {
     outOfStock: response.data.outOfStockProducts,
     movements: response.data.totalMovements,
     stockValue: response.data.totalStockValue,
+    entriesThisMonth: response.data.entriesThisMonth,
+    exitsThisMonth: response.data.exitsThisMonth,
   };
 };
 

@@ -47,7 +47,9 @@ export const importProducts = async (items) => {
 export const uploadProductAttachment = async (productId, file) => {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await api.post(`/attachments/products/${productId}`, formData);
+    const response = await api.post(`/attachments/products/${productId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
     return response.data;
 };
 
