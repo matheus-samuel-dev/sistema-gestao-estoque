@@ -1,0 +1,43 @@
+export default function IconMock(props) {
+  return <span {...props} data-testid="mui-icon" />;
+}
+
+export const Add = IconMock;
+export const AttachFile = IconMock;
+export const BarChart = IconMock;
+export const CalendarMonth = IconMock;
+export const Cancel = IconMock;
+export const Category = IconMock;
+export const CategoryOutlined = IconMock;
+export const Clear = IconMock;
+export const CloudUploadOutlined = IconMock;
+export const Dashboard = IconMock;
+export const Delete = IconMock;
+export const Download = IconMock;
+export const Edit = IconMock;
+export const Email = IconMock;
+export const FileDownload = IconMock;
+export const FilterAlt = IconMock;
+export const InfoOutlined = IconMock;
+export const Inventory = IconMock;
+export const Inventory2 = IconMock;
+export const Inventory2Outlined = IconMock;
+export const LocalShipping = IconMock;
+export const Lock = IconMock;
+export const LockReset = IconMock;
+export const Logout = IconMock;
+export const Menu = IconMock;
+export const NotificationsNone = IconMock;
+export const PaymentsOutlined = IconMock;
+export const PictureAsPdf = IconMock;
+export const Save = IconMock;
+export const Search = IconMock;
+export const Security = IconMock;
+export const Settings = IconMock;
+export const SwapHoriz = IconMock;
+export const TrendingDown = IconMock;
+export const TrendingUp = IconMock;
+export const UploadFile = IconMock;
+export const Visibility = IconMock;
+export const VisibilityOff = IconMock;
+export const WarningAmber = IconMock;

@@ -53,6 +53,7 @@ import {
     deleteMovement
 } from "../../services/stockMovementService";
 import MovementAttachmentsDialog from "../../components/Movements/MovementAttachmentsDialog";
+import ProductWithImage from "../../components/Common/ProductWithImage";
 
 const ORIGIN_OPTIONS = [
     ["COMPRA", "Compra"],
@@ -170,6 +171,15 @@ function Movements() {
 
                     product:
                         movement.product?.name,
+
+                    productData:
+                        movement.product,
+
+                    productCode:
+                        movement.productCode,
+
+                    thumbnailUrl:
+                        movement.thumbnailUrl,
 
                     type:
                         movement.type,
@@ -295,7 +305,17 @@ function Movements() {
         {
             field: "product",
             headerName: "Produto",
-            flex: 1
+            flex: 1.4,
+            minWidth: 220,
+            renderCell: (params) => (
+                <ProductWithImage
+                    product={params.row.productData}
+                    name={params.row.product}
+                    code={params.row.productCode}
+                    thumbnailUrl={params.row.thumbnailUrl}
+                    size={40}
+                />
+            )
         },
 
         {
@@ -460,8 +480,6 @@ function Movements() {
 
     {/*const handleEdit = (row) => {
 
-        console.log("Editar:", row);
-
         alert(
             "Função de edição será implementada."
         );
@@ -476,8 +494,6 @@ function Movements() {
             );
 
         if (!confirmDelete) return;
-
-        console.log("Excluir:", id);
 
     };*/}
 
@@ -496,8 +512,6 @@ function Movements() {
             Observações: row.notes || "",
             Data: row.createdAt
         }));
-
-        console.log(dados);
 
         const worksheet =
             XLSX.utils.json_to_sheet(dados);
@@ -999,6 +1013,7 @@ function Movements() {
                         10,
                         20
                     ]}
+                    getRowHeight={() => 64}
                     sx={{
                         border: "none",
                         minWidth: 720,

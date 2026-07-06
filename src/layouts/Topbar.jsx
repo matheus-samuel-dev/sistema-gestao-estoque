@@ -2,14 +2,14 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Avatar,
   Box,
 } from "@mui/material";
 
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import MenuIcon from "@mui/icons-material/Menu";
+import CompanyLogo from "../components/Common/CompanyLogo";
 
-function Topbar({ onMenuClick }) {
+function Topbar({ onMenuClick, settings }) {
   return (
     <AppBar
       elevation={1}
@@ -37,15 +37,7 @@ function Topbar({ onMenuClick }) {
           <NotificationsNoneIcon />
         </IconButton>
 
-        <Avatar
-          sx={{
-            ml: 2,
-            width: 36,
-            height: 36,
-          }}
-        >
-          M
-        </Avatar>
+        <CompanyLogo companyName={settings?.companyName} logoUrl={settings?.logoUrl} size={36} sx={{ ml: 2 }} />
       </Toolbar>
     </AppBar>
   );

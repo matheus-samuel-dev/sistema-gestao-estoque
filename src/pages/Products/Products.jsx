@@ -20,6 +20,7 @@ import { formatCurrency, getApiError } from "../../utils/formatters";
 import ProductFormDialog from "../../components/Products/ProductFormDialog";
 import ProductImportDialog from "../../components/Products/ProductImportDialog";
 import ProductAttachmentsDialog from "../../components/Products/ProductAttachmentsDialog";
+import ProductWithImage from "../../components/Common/ProductWithImage";
 
 export default function Products() {
   const navigate = useNavigate();
@@ -179,8 +180,10 @@ export default function Products() {
                 <TableRow hover key={product.id}>
                   <TableCell>{product.internalCode || product.sku || "-"}</TableCell>
                   <TableCell>
-                    <Typography fontWeight={700}>{product.name}</Typography>
-                    <Typography variant="caption" color="text.secondary">{product.model || product.physicalLocation || "Sem complemento"}</Typography>
+                    <ProductWithImage
+                      product={product}
+                      complement={product.category?.name || product.model || product.physicalLocation || ""}
+                    />
                   </TableCell>
                   <TableCell>{product.category?.name || "-"}</TableCell>
                   <TableCell>{product.supplier?.name || "-"}</TableCell>
@@ -212,7 +215,7 @@ export default function Products() {
 
       <ProductFormDialog key={`${editing?.id || "new"}-${formOpen}`} open={formOpen} product={editing} categories={categories} suppliers={suppliers} loading={saving} onClose={() => setFormOpen(false)} onSave={save} />
       <ProductImportDialog open={importOpen} categories={categories} loading={saving} onClose={() => setImportOpen(false)} onImport={runImport} />
-      <ProductAttachmentsDialog open={Boolean(attachments)} product={attachments} onClose={() => setAttachments(null)} notify={notify} />
+      <ProductAttachmentsDialog open={Boolean(attachments)} product={attachments} onClose={() => setAttachments(null)} notify={notify} onChanged={load} />
 
       <Dialog open={Boolean(deleting)} onClose={() => !saving && setDeleting(null)}>
         <DialogTitle>Excluir produto?</DialogTitle>

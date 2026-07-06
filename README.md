@@ -1,4 +1,70 @@
+
 # 🚀 Sistema de Gestão de Estoque
+
+# Qualidade de engenharia
+
+## Testes frontend
+
+O frontend usa Vitest com React Testing Library.
+
+Comandos:
+
+```bash
+npm test
+npm run lint
+npm run build
+```
+
+Cobertura inicial:
+
+* formulário de login;
+* persistência de token em `localStorage` e `sessionStorage`;
+* limpeza de sessão no fluxo 401/403;
+* renderização inicial de Dashboard, Produtos, Categorias e Movimentações com services mockados.
+
+## CI
+
+Workflow criado em `.github/workflows/ci.yml`.
+
+O CI executa em Linux:
+
+```bash
+npm ci
+npm run lint
+npm test
+npm run build
+```
+
+Usa cache npm via `actions/setup-node`. O pipeline falha se lint, testes ou build quebrarem.
+
+## Segurança no frontend
+
+O interceptor em `src/services/api.js`:
+
+* injeta `Authorization: Bearer <token>`;
+* remove tokens em respostas 401/403;
+* redireciona para `/login` quando a sessão expira.
+
+Decisão atual: o token permanece em `localStorage` quando o usuário marca “Lembrar meu acesso” e em `sessionStorage` quando não marca. A próxima evolução recomendada é migrar para cookie `HttpOnly`, `Secure` e `SameSite`, exigindo ajuste coordenado no backend.
+
+## Variáveis de ambiente
+
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+## Migração gradual para TypeScript
+
+O projeto ainda está em JavaScript. A migração recomendada é incremental:
+
+1. Criar tipos para DTOs e respostas dos `services`.
+2. Migrar `src/services` para `.ts`.
+3. Migrar componentes compartilhados como `ProductWithImage`.
+4. Migrar páginas de formulário por último.
+
+---
+
+<div align="center">
 
 <p align="center">
   <strong>Sistema Full Stack para controle de estoque, produtos, categorias e movimentações, desenvolvido com React, Spring Boot e PostgreSQL.</strong>

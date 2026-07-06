@@ -8,5 +8,14 @@ export const parseCurrency = (value) => {
 
 export const currencyInput = (value) => formatCurrency(parseCurrency(value));
 
-export const getApiError = (error, fallback = "Não foi possível concluir a operação.") =>
-  error.response?.data?.message || error.message || fallback;
+const technicalErrorPatterns = [
+  /unable to access lob stream/i,
+  /request failed with status code/i,
+  /failed to load resource/i,
+  /network error/i,
+];
+
+export const getApiError = (error, fallback = "Não foi possível concluir a operação.") => {
+  const message = error.response?.data?.message || error.message || fallback;
+  return technicalErrorPatterns.some((pattern) => pattern.test(message)) ? fallback : message;
+};

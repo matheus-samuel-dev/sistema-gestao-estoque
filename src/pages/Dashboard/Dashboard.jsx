@@ -41,6 +41,7 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 
 import DashboardCard from "../../components/Dashboard/DashboardCard";
+import ProductWithImage from "../../components/Common/ProductWithImage";
 
 import {
     getDashboardData,
@@ -388,7 +389,13 @@ function Dashboard() {
                                         key={movement.id ?? `${movement.createdAt}-${index}`}
                                     >
                                         <TableCell>
-                                            {movement.product?.name ?? "-"}
+                                            <ProductWithImage
+                                                product={movement.product}
+                                                name={movement.productName}
+                                                code={movement.productCode}
+                                                thumbnailUrl={movement.thumbnailUrl}
+                                                size={40}
+                                            />
                                         </TableCell>
 
                                         <TableCell>
@@ -463,7 +470,11 @@ function Dashboard() {
                                 {latestProducts.map((product) => (
                                     <TableRow key={product.id}>
                                         <TableCell>
-                                            {product.name}
+                                            <ProductWithImage
+                                                product={product}
+                                                complement={product.category?.name}
+                                                size={40}
+                                            />
                                         </TableCell>
 
                                         <TableCell>

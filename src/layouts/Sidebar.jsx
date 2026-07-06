@@ -19,10 +19,11 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 import { useNavigate, useLocation } from "react-router-dom";
+import CompanyLogo from "../components/Common/CompanyLogo";
 
 const drawerWidth = 260;
 
-function Sidebar({ mobileOpen, onClose }) {
+function Sidebar({ mobileOpen, onClose, settings }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -73,12 +74,33 @@ function Sidebar({ mobileOpen, onClose }) {
     const drawerContent = (
         <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
             <Toolbar>
-                <Typography
-                    variant="h6"
-                    fontWeight="bold"
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1.25,
+                        minWidth: 0,
+                    }}
                 >
-                    Sistema de Estoque
-                </Typography>
+                    <CompanyLogo
+                        companyName={settings?.companyName}
+                        logoUrl={settings?.logoUrl}
+                        size={38}
+                        sx={{ flexShrink: 0 }}
+                    />
+                    <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                            variant="subtitle1"
+                            fontWeight={900}
+                            noWrap
+                        >
+                            {settings?.companyName || "Sistema de Estoque"}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.68)" }} noWrap>
+                            Gestão de estoque
+                        </Typography>
+                    </Box>
+                </Box>
             </Toolbar>
 
             <Divider sx={{ borderColor: "#334155" }} />

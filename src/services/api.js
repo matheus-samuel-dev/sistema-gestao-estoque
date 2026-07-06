@@ -15,13 +15,17 @@ const api = axios.create({
   timeout: 20000,
 });
 
+export const clearAuthAndRedirectToLogin = (redirect = (path) => window.location.assign(path)) => {
+  localStorage.removeItem("token");
+  sessionStorage.removeItem("token");
+  redirect("/login");
+};
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if ([401, 403].includes(error.response?.status) && !window.location.pathname.startsWith("/login")) {
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-      window.location.assign("/login");
+      clearAuthAndRedirectToLogin();
     }
     return Promise.reject(error);
   }
